@@ -1,0 +1,7 @@
+inventory.json
+inventory.json.bak
+scan.log
+config/
+certs/
+__pycache__/
+*.pyc

@@ -1,0 +1,29 @@
+version: "3"
+services:
+  grocy:
+    image: linuxserver/grocy:latest
+    container_name: grocy
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - ./config:/config
+      - ./certs:/certs:ro
+    ports:
+      - "9283:80"
+      - "9284:443"
+    restart: unless-stopped
+
+  # Nginx reverse proxy for HTTPS
+  grocy-ssl:
+    image: nginx:alpine
+    container_name: grocy-ssl
+    volumes:
+      - ./certs:/certs:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "9285:443"
+    depends_on:
+      - grocy
+    restart: unless-stopped

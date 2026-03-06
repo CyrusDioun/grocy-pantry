@@ -8,18 +8,44 @@
   :root {
     --bg: #FEFCF3;
     --card: #FFFFFF;
+    --sidebar-bg: #F8F4EC;
     --primary: #5B8C5A;
     --primary-light: #7BAD7A;
+    --primary-50: #EDF7ED;
+    --primary-100: #C3E6C4;
     --accent: #D4A574;
     --warning: #E8A838;
     --danger: #C75050;
     --text: #2D3436;
+    --text-secondary: #636E72;
     --muted: #95A5A6;
     --border: #E8E0D0;
     --expiring-bg: #FFF8E7;
     --done-bg: #F5F5F5;
     --shadow: 0 1px 4px rgba(0,0,0,0.08);
     --radius: 12px;
+    /* Category colors */
+    --cat-dairy: #E8F0FE;
+    --cat-produce: #E6F4EA;
+    --cat-meat: #FCE8E6;
+    --cat-grains: #FFF8E1;
+    --cat-snacks: #F3E8FD;
+    --cat-condiments: #FFF3E0;
+    --cat-frozen: #E0F7FA;
+    --cat-beverages: #E8EAF6;
+    --cat-meals: #FBE9E7;
+    --cat-other: #F5F5F5;
+    /* Category text colors */
+    --cat-dairy-text: #1A56DB;
+    --cat-produce-text: #2E7D32;
+    --cat-meat-text: #C62828;
+    --cat-grains-text: #F57F17;
+    --cat-snacks-text: #6A1B9A;
+    --cat-condiments-text: #E65100;
+    --cat-frozen-text: #00838F;
+    --cat-beverages-text: #283593;
+    --cat-meals-text: #BF360C;
+    --cat-other-text: #546E7A;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -475,6 +501,112 @@
     color: var(--muted);
     margin-left: 4px;
   }
+
+  /* ── Category pill bar ── */
+  .cat-bar-wrap {
+    background: var(--sidebar-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .cat-bar-wrap::-webkit-scrollbar { display: none; }
+  .cat-bar {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    min-width: max-content;
+  }
+  .cat-pill {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1.5px solid transparent;
+    background: var(--card);
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+    font-weight: 500;
+    border-color: var(--border);
+  }
+  .cat-pill:hover { border-color: var(--primary); color: var(--primary); }
+  .cat-pill.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    font-weight: 600;
+  }
+  .cat-pill[data-cat="Dairy"].active { background: var(--cat-dairy); border-color: var(--cat-dairy-text); color: var(--cat-dairy-text); }
+  .cat-pill[data-cat="Produce"].active { background: var(--cat-produce); border-color: var(--cat-produce-text); color: var(--cat-produce-text); }
+  .cat-pill[data-cat="Meat & Protein"].active { background: var(--cat-meat); border-color: var(--cat-meat-text); color: var(--cat-meat-text); }
+  .cat-pill[data-cat="Grains & Bakery"].active { background: var(--cat-grains); border-color: var(--cat-grains-text); color: var(--cat-grains-text); }
+  .cat-pill[data-cat="Snacks"].active { background: var(--cat-snacks); border-color: var(--cat-snacks-text); color: var(--cat-snacks-text); }
+  .cat-pill[data-cat="Condiments & Sauces"].active { background: var(--cat-condiments); border-color: var(--cat-condiments-text); color: var(--cat-condiments-text); }
+  .cat-pill[data-cat="Frozen"].active { background: var(--cat-frozen); border-color: var(--cat-frozen-text); color: var(--cat-frozen-text); }
+  .cat-pill[data-cat="Beverages"].active { background: var(--cat-beverages); border-color: var(--cat-beverages-text); color: var(--cat-beverages-text); }
+  .cat-pill[data-cat="Meals & Prepared"].active { background: var(--cat-meals); border-color: var(--cat-meals-text); color: var(--cat-meals-text); }
+  .cat-pill[data-cat="Other"].active { background: var(--cat-other); border-color: var(--cat-other-text); color: var(--cat-other-text); }
+
+  /* ── Category badge on cards ── */
+  .cat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    padding: 1px 7px;
+    border-radius: 10px;
+    cursor: pointer;
+    position: relative;
+    font-weight: 500;
+    border: 1px solid transparent;
+    transition: opacity 0.15s;
+  }
+  .cat-badge:hover { opacity: 0.8; }
+  .cat-badge[data-cat="Dairy"] { background: var(--cat-dairy); color: var(--cat-dairy-text); border-color: #c5d8fc; }
+  .cat-badge[data-cat="Produce"] { background: var(--cat-produce); color: var(--cat-produce-text); border-color: #b8e0bb; }
+  .cat-badge[data-cat="Meat & Protein"] { background: var(--cat-meat); color: var(--cat-meat-text); border-color: #f5c4c0; }
+  .cat-badge[data-cat="Grains & Bakery"] { background: var(--cat-grains); color: var(--cat-grains-text); border-color: #fde8a0; }
+  .cat-badge[data-cat="Snacks"] { background: var(--cat-snacks); color: var(--cat-snacks-text); border-color: #ddb8f7; }
+  .cat-badge[data-cat="Condiments & Sauces"] { background: var(--cat-condiments); color: var(--cat-condiments-text); border-color: #ffd094; }
+  .cat-badge[data-cat="Frozen"] { background: var(--cat-frozen); color: var(--cat-frozen-text); border-color: #9ee5ec; }
+  .cat-badge[data-cat="Beverages"] { background: var(--cat-beverages); color: var(--cat-beverages-text); border-color: #b3bcf0; }
+  .cat-badge[data-cat="Meals & Prepared"] { background: var(--cat-meals); color: var(--cat-meals-text); border-color: #f5c0b0; }
+  .cat-badge[data-cat="Other"] { background: var(--cat-other); color: var(--cat-other-text); border-color: #d0d8db; }
+
+  /* ── Category dropdown picker ── */
+  .cat-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 50;
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    border: 1.5px solid var(--border);
+    padding: 6px;
+    min-width: 200px;
+    display: none;
+  }
+  .cat-dropdown.open { display: block; }
+  .cat-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text);
+    transition: background 0.1s;
+  }
+  .cat-dropdown-item:hover { background: var(--bg); }
+  .cat-dropdown-item.selected { background: var(--primary-50); color: var(--primary); font-weight: 600; }
+  .cat-dropdown-item .cat-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
 </style>
 </head>
 <body>
@@ -510,6 +642,10 @@
   <div class="tabs" id="tabs"></div>
 </div>
 
+<div class="cat-bar-wrap" id="catBarWrap">
+  <div class="cat-bar" id="catBar"></div>
+</div>
+
 <div class="content" id="content"></div>
 
 <!-- Add product modal -->
@@ -542,6 +678,21 @@
       <input type="date" id="addExpiry">
     </div>
     <div class="modal-field">
+      <label>Category</label>
+      <select id="addCategory">
+        <option value="Other">📦 Other</option>
+        <option value="Dairy">🥛 Dairy</option>
+        <option value="Produce">🥬 Produce</option>
+        <option value="Meat & Protein">🥩 Meat &amp; Protein</option>
+        <option value="Grains & Bakery">🍞 Grains &amp; Bakery</option>
+        <option value="Snacks">🍿 Snacks</option>
+        <option value="Condiments & Sauces">🫙 Condiments &amp; Sauces</option>
+        <option value="Frozen">🧊 Frozen</option>
+        <option value="Beverages">🥤 Beverages</option>
+        <option value="Meals & Prepared">🍲 Meals &amp; Prepared</option>
+      </select>
+    </div>
+    <div class="modal-field">
       <label>Barcode (optional)</label>
       <input type="text" id="addBarcode" placeholder="Leave blank to auto-generate">
     </div>
@@ -558,10 +709,31 @@
 const API = '';  // same origin
 let products = [];
 let currentTab = 'all';
+let currentCategory = 'all';
 let currentSort = 'name';
 let expandedCards = new Set();
 let saving = false;
 let refreshTimer = null;
+
+const CATEGORIES = [
+  { id: 'Dairy',              emoji: '🥛', color: 'var(--cat-dairy)',      textColor: 'var(--cat-dairy-text)' },
+  { id: 'Produce',            emoji: '🥬', color: 'var(--cat-produce)',    textColor: 'var(--cat-produce-text)' },
+  { id: 'Meat & Protein',     emoji: '🥩', color: 'var(--cat-meat)',       textColor: 'var(--cat-meat-text)' },
+  { id: 'Grains & Bakery',    emoji: '🍞', color: 'var(--cat-grains)',     textColor: 'var(--cat-grains-text)' },
+  { id: 'Snacks',             emoji: '🍿', color: 'var(--cat-snacks)',     textColor: 'var(--cat-snacks-text)' },
+  { id: 'Condiments & Sauces',emoji: '🫙', color: 'var(--cat-condiments)', textColor: 'var(--cat-condiments-text)' },
+  { id: 'Frozen',             emoji: '🧊', color: 'var(--cat-frozen)',     textColor: 'var(--cat-frozen-text)' },
+  { id: 'Beverages',          emoji: '🥤', color: 'var(--cat-beverages)',  textColor: 'var(--cat-beverages-text)' },
+  { id: 'Meals & Prepared',   emoji: '🍲', color: 'var(--cat-meals)',      textColor: 'var(--cat-meals-text)' },
+  { id: 'Other',              emoji: '📦', color: 'var(--cat-other)',      textColor: 'var(--cat-other-text)' },
+];
+
+function getCategoryInfo(catId) {
+  return CATEGORIES.find(c => c.id === catId) || CATEGORIES[CATEGORIES.length - 1];
+}
+
+// Active dropdown state
+let openDropdownBarcode = null;
 
 const CATEGORY_MAP = {
   fridge: '❄️', freezer: '🧊', pantry: '🥫', 'spice rack': '🌿',
@@ -629,7 +801,7 @@ function tabs() {
   products.forEach(p => { const l = (p.location||'pantry').toLowerCase(); counts[l] = (counts[l]||0)+1; counts['all']=(counts['all']||0)+1; });
   return locs.map(l => ({
     id: l,
-    label: l === 'all' ? `All (${counts.all||0})` : `${categoryEmoji({location:l})} ${capitalize(l)} (${counts[l]||0})`
+    label: l === 'all' ? `All (${counts.all||0})` : `${categoryEmoji(l)} ${capitalize(l)} (${counts[l]||0})`
   }));
 }
 
@@ -639,14 +811,23 @@ function filteredProducts() {
   const q = document.getElementById('searchInput').value.trim().toLowerCase();
   let ps = products.filter(p => {
     if (currentTab !== 'all' && (p.location||'pantry').toLowerCase() !== currentTab) return false;
+    if (currentCategory !== 'all' && (p.user_category || 'Other') !== currentCategory) return false;
     if (q) {
-      const hay = `${p.name} ${p.brand} ${p.location} ${p.barcode}`.toLowerCase();
+      const hay = `${p.name} ${p.brand} ${p.location} ${p.barcode} ${p.user_category||''}`.toLowerCase();
       if (!hay.includes(q)) return false;
     }
     return true;
   });
   ps = sortProducts(ps);
   return ps;
+}
+
+// Products filtered by location only (used to count categories in current location view)
+function locationFilteredProducts() {
+  return products.filter(p => {
+    if (currentTab !== 'all' && (p.location||'pantry').toLowerCase() !== currentTab) return false;
+    return true;
+  });
 }
 
 function sortProducts(ps) {
@@ -667,9 +848,45 @@ function sortProducts(ps) {
 
 function render() {
   renderTabs();
+  renderCatBar();
   renderContent();
   renderStats();
 }
+
+function renderCatBar() {
+  const bar = document.getElementById('catBar');
+  const locFiltered = locationFilteredProducts();
+  // Count categories within current location filter
+  const counts = {};
+  locFiltered.forEach(p => {
+    const c = p.user_category || 'Other';
+    counts[c] = (counts[c] || 0) + 1;
+  });
+
+  // Build pills: "All" + categories with >0 items
+  const total = locFiltered.length;
+  let html = `<button class="cat-pill${currentCategory === 'all' ? ' active' : ''}" data-cat="all" onclick="setCategory('all')">All (${total})</button>`;
+
+  CATEGORIES.forEach(cat => {
+    const count = counts[cat.id] || 0;
+    if (count === 0) return;
+    html += `<button class="cat-pill${currentCategory === cat.id ? ' active' : ''}" data-cat="${escAttr(cat.id)}" onclick="setCategory('${cat.id.replace(/'/g, "\\'")}')"> ${cat.emoji} ${cat.id} (${count})</button>`;
+  });
+
+  bar.innerHTML = html;
+}
+
+function setCategory(cat) {
+  // Single-select: tap active = back to all
+  if (currentCategory === cat && cat !== 'all') {
+    currentCategory = 'all';
+  } else {
+    currentCategory = cat;
+  }
+  render();
+}
+
+function escAttr(s) { return s.replace(/"/g, '&quot;'); }
 
 function renderStats() {
   const total = products.length;
@@ -732,7 +949,7 @@ function renderContent() {
       byLoc[l].push(p);
     });
     for (const [loc, items] of Object.entries(byLoc).sort(([a],[b]) => a.localeCompare(b))) {
-      html += `<div class="section-heading">${categoryEmoji({location:loc.toLowerCase()})} ${loc} (${items.length})</div>`;
+      html += `<div class="section-heading">${categoryEmoji(loc.toLowerCase())} ${loc} (${items.length})</div>`;
       html += `<div class="products-grid">${items.map(p => cardHTML(p, false)).join('')}</div>`;
     }
   } else {
@@ -742,6 +959,49 @@ function renderContent() {
   }
 
   content.innerHTML = html;
+}
+
+function catBadgeHTML(p) {
+  const cat = p.user_category || 'Other';
+  const info = getCategoryInfo(cat);
+  const dropdownId = `catdrop-${p.barcode}`;
+  const isOpen = openDropdownBarcode === p.barcode;
+
+  const dropdownItems = CATEGORIES.map(c =>
+    `<div class="cat-dropdown-item${c.id === cat ? ' selected' : ''}" onclick="selectCategory('${p.barcode}','${c.id}',event)">
+      <span class="cat-dot" style="background:${c.textColor}"></span>
+      ${c.emoji} ${c.id}
+    </div>`
+  ).join('');
+
+  return `<span class="cat-badge" data-cat="${escAttr(cat)}" onclick="toggleCatDropdown('${p.barcode}',event)" title="Change category" style="position:relative">
+    ${info.emoji} ${cat}
+    <div class="cat-dropdown${isOpen ? ' open' : ''}" id="${dropdownId}">
+      ${dropdownItems}
+    </div>
+  </span>`;
+}
+
+function toggleCatDropdown(barcode, event) {
+  event.stopPropagation();
+  if (openDropdownBarcode === barcode) {
+    openDropdownBarcode = null;
+  } else {
+    openDropdownBarcode = barcode;
+  }
+  render();
+}
+
+async function selectCategory(barcode, catId, event) {
+  event.stopPropagation();
+  const p = products.find(p => p.barcode === barcode);
+  if (!p) return;
+  p.user_category = catId;
+  p.category_source = 'manual';
+  openDropdownBarcode = null;
+  render();
+  await patch(barcode, { user_category: catId, category_source: 'manual' });
+  toast(`Category set to ${catId}`);
 }
 
 function cardHTML(p, isUrgent) {
@@ -793,7 +1053,11 @@ function cardHTML(p, isUrgent) {
       <div class="card-emoji">${productEmoji(p)}</div>
       <div class="card-info">
         <div class="card-name">${p.name || 'Unknown'}</div>
-        <div class="card-sub">${p.brand || ''}${p.location ? `<span class="loc-badge">${p.location}</span>` : ''}</div>
+        <div class="card-sub">
+          ${p.brand ? `<span>${p.brand}</span>` : ''}
+          ${catBadgeHTML(p)}
+          ${p.location ? `<span class="loc-badge">${p.location}</span>` : ''}
+        </div>
       </div>
       <div class="card-controls" onclick="event.stopPropagation()">
         <button class="qty-btn" onclick="changeQty('${p.barcode}',-1)">−</button>
@@ -910,6 +1174,7 @@ async function patch(barcode, fields) {
 
 function setTab(id) {
   currentTab = id;
+  currentCategory = 'all'; // reset category filter when location changes
   render();
 }
 
@@ -930,6 +1195,7 @@ function closeAddModal() {
   ['addName','addBrand','addBarcode'].forEach(id => document.getElementById(id).value='');
   document.getElementById('addQty').value = '1';
   document.getElementById('addExpiry').value = '';
+  document.getElementById('addCategory').value = 'Other';
 }
 
 async function submitAdd() {
@@ -942,6 +1208,8 @@ async function submitAdd() {
     location: document.getElementById('addLocation').value,
     expiration_date: document.getElementById('addExpiry').value || null,
     barcode: document.getElementById('addBarcode').value.trim() || undefined,
+    user_category: document.getElementById('addCategory').value || 'Other',
+    category_source: 'manual',
   };
   try {
     const res = await fetch(`${API}/api/pantry`, {
@@ -992,6 +1260,14 @@ function scheduleRefresh() {
 
 // Init
 loadPantry().then(scheduleRefresh);
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', () => {
+  if (openDropdownBarcode !== null) {
+    openDropdownBarcode = null;
+    render();
+  }
+});
 
 // Handle keyboard shortcut for add
 document.addEventListener('keydown', e => {

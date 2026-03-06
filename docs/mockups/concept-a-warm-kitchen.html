@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept A — Warm Kitchen</title>
+<style>
+  :root {
+    --bg: #FEFCF3;
+    --card: #FFFFFF;
+    --sidebar-bg: #F8F4EC;
+    --primary-50: #EDF7ED;
+    --primary-100: #C3E6C4;
+    --primary-500: #5B8C5A;
+    --primary-600: #4A7A49;
+    --primary-700: #3A6839;
+    --success: #2E7D32;
+    --warning: #E8A838;
+    --danger: #C75050;
+    --info: #5B8C9A;
+    --text: #2D3436;
+    --text-secondary: #636E72;
+    --text-muted: #95A5A6;
+    --border: #E8E0D0;
+    --shadow: 0 1px 4px rgba(0,0,0,0.07);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+    --radius: 14px;
+    --radius-sm: 8px;
+    --cat-dairy: #E8F0FE;
+    --cat-dairy-text: #3C4DBA;
+    --cat-produce: #E6F4EA;
+    --cat-produce-text: #2E7D32;
+    --cat-meat: #FCE8E6;
+    --cat-meat-text: #B71C1C;
+    --cat-grains: #FFF8E1;
+    --cat-grains-text: #E65100;
+    --cat-snacks: #F3E8FD;
+    --cat-snacks-text: #6A1B9A;
+    --cat-condiments: #FFF3E0;
+    --cat-condiments-text: #BF360C;
+    --cat-frozen: #E0F7FA;
+    --cat-frozen-text: #006064;
+    --cat-beverages: #E8EAF6;
+    --cat-beverages-text: #283593;
+    --cat-meals: #FBE9E7;
+    --cat-meals-text: #BF360C;
+    --cat-other: #F5F5F5;
+    --cat-other-text: #616161;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    font-size: 15px;
+    line-height: 1.45;
+    min-height: 100vh;
+  }
+
+  /* ═══════════════════════════════════════════
+     DESKTOP LAYOUT (>1024px)
+  ═══════════════════════════════════════════ */
+  .app-shell {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 280px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+
+  .sidebar-logo {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-logo h1 {
+    font-size: 21px;
+    font-weight: 800;
+    color: var(--primary-700);
+    letter-spacing: -0.3px;
+  }
+  .sidebar-logo .subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .sidebar-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-stat-card {
+    background: var(--card);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+  }
+  .sidebar-stat-card .stat-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+  }
+  .sidebar-stat-card .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+  .sidebar-stat-card.warn .stat-value { color: var(--warning); }
+  .sidebar-stat-card.danger .stat-value { color: var(--danger); }
+
+  .sidebar-section {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  /* Location list in sidebar */
+  .location-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+  .location-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+  .location-item:hover { background: var(--primary-50); }
+  .location-item.active {
+    background: var(--primary-100);
+    color: var(--primary-700);
+    font-weight: 700;
+  }
+  .location-item .loc-icon { font-size: 18px; }
+  .location-item .loc-count {
+    margin-left: auto;
+    font-size: 12px;
+    background: rgba(0,0,0,0.07);
+    border-radius: 12px;
+    padding: 2px 7px;
+    font-weight: 600;
+  }
+
+  /* Category list in sidebar */
+  .category-list { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+  .category-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    position: relative;
+    overflow: hidden;
+  }
+  .category-item:hover { background: rgba(0,0,0,0.04); }
+  .category-item.active { font-weight: 600; color: var(--text); }
+  .cat-color-bar {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    border-radius: 2px 0 0 2px;
+  }
+  .category-item.active .cat-color-bar { opacity: 1; }
+  .category-item .cat-emoji { font-size: 16px; }
+  .category-item .cat-count {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* Sort in sidebar */
+  .sort-group { display: flex; flex-direction: column; gap: 4px; }
+  .sort-option {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    transition: background 0.15s;
+  }
+  .sort-option:hover { background: rgba(0,0,0,0.04); }
+  .sort-option.active { background: var(--primary-50); color: var(--primary-700); font-weight: 600; }
+  .sort-option .sort-icon { font-size: 14px; }
+  .sort-option .sort-dir { margin-left: auto; font-size: 12px; color: var(--primary-500); }
+
+  /* ── Main area ── */
+  .main-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Top header (desktop minimal) ── */
+  .top-bar {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    max-width: 520px;
+  }
+  .search-input {
+    width: 100%;
+    padding: 10px 16px 10px 40px;
+    border-radius: 24px;
+    border: 1.5px solid var(--border);
+    background: var(--bg);
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .search-input:focus { border-color: var(--primary-500); box-shadow: 0 0 0 3px var(--primary-50); }
+  .search-icon {
+    position: absolute; left: 14px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px; color: var(--text-muted);
+  }
+  .add-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 10px 18px;
+    border-radius: 24px;
+    border: none;
+    background: var(--primary-500);
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .add-btn:hover { background: var(--primary-600); }
+
+  /* ── Content area ── */
+  .content-area {
+    padding: 24px;
+    flex: 1;
+  }
+
+  /* ── Expiring alert banner ── */
+  .alert-banner {
+    background: linear-gradient(135deg, #FFF8E7 0%, #FFF3CC 100%);
+    border: 1px solid #F5C842;
+    border-left: 5px solid var(--warning);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .alert-banner .alert-icon { font-size: 22px; }
+  .alert-banner .alert-text { flex: 1; }
+  .alert-banner .alert-title { font-weight: 700; font-size: 14px; color: #8B5E00; }
+  .alert-banner .alert-sub { font-size: 12px; color: #A07020; margin-top: 2px; }
+  .alert-banner .alert-action {
+    padding: 7px 14px;
+    background: var(--warning);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* ── Section heading ── */
+  .section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .section-head h2 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .section-head .item-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--border);
+    border-radius: 12px;
+    padding: 2px 8px;
+  }
+
+  /* ── Cards grid ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: box-shadow 0.15s, transform 0.1s;
+    cursor: pointer;
+  }
+  .card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+  .card.expiring { border-left: 4px solid var(--warning); }
+  .card.expired { border-left: 4px solid var(--danger); }
+  .card.out-of-stock { opacity: 0.5; background: #F9F9F9; }
+
+  .card-body {
+    display: flex;
+    align-items: center;
+    padding: 13px 14px;
+    gap: 11px;
+  }
+  .card-emoji { font-size: 30px; flex-shrink: 0; width: 40px; text-align: center; }
+  .card-info { flex: 1; min-width: 0; }
+  .card-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .card-sub {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .card-brand {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .cat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .cat-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .loc-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 2px 6px;
+    border-radius: 20px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+  }
+  .expiry-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 20px;
+  }
+  .expiry-badge.soon { background: #FFF3CC; color: #8B5E00; }
+  .expiry-badge.expired { background: #FDECEA; color: var(--danger); }
+  .expiry-badge.fresh { background: var(--primary-50); color: var(--primary-700); }
+
+  .card-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .qty-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .qty-btn {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--bg);
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--primary-500);
+    transition: all 0.15s;
+    line-height: 1;
+  }
+  .qty-btn:hover { border-color: var(--primary-500); background: var(--primary-50); }
+  .qty-val {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--text);
+    min-width: 24px;
+    text-align: center;
+  }
+
+  /* ── Mobile layout overrides ── */
+  .mobile-header {
+    display: none;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .mobile-header-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .mobile-header h1 { font-size: 20px; font-weight: 800; color: var(--primary-700); }
+  .mobile-icon-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: var(--bg);
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .mobile-icon-btn.primary { background: var(--primary-500); color: white; }
+  .mobile-stats {
+    display: flex; gap: 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+    padding-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .m-stat { display: flex; align-items: center; gap: 4px; }
+  .m-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* Mobile: scroll pill bars */
+  .mobile-filter-row {
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 10px;
+  }
+  .mobile-filter-row::-webkit-scrollbar { display: none; }
+  .mobile-filter-inner {
+    display: flex; gap: 6px;
+    width: max-content;
+  }
+
+  .cat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 13px;
+    border-radius: 24px;
+    border: 1.5px solid transparent;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .cat-pill.all {
+    background: var(--primary-500);
+    color: white;
+  }
+  .cat-pill.inactive {
+    background: var(--card);
+    color: var(--text-secondary);
+    border-color: var(--border);
+  }
+  .cat-pill.inactive:hover { border-color: var(--primary-500); color: var(--primary-500); }
+
+  /* Mobile tabs */
+  .loc-tabs {
+    display: flex; gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-bottom: none;
+  }
+  .loc-tabs::-webkit-scrollbar { display: none; }
+  .loc-tab {
+    padding: 8px 16px;
+    border: none;
+    background: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    border-bottom: 2.5px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .loc-tab.active {
+    color: var(--primary-500);
+    border-bottom-color: var(--primary-500);
+    font-weight: 700;
+  }
+
+  /* Empty state */
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 60px 24px;
+    text-align: center;
+  }
+  .empty-state .empty-icon { font-size: 56px; margin-bottom: 16px; }
+  .empty-state h3 { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .empty-state p { font-size: 14px; color: var(--text-muted); max-width: 280px; line-height: 1.6; }
+  .empty-cta {
+    margin-top: 20px;
+    padding: 11px 22px;
+    background: var(--primary-500);
+    color: white;
+    border: none;
+    border-radius: 24px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1024px) {
+    .sidebar { display: none; }
+    .top-bar { display: none; }
+    .mobile-header { display: block; }
+    .content-area { padding: 12px 12px 80px; }
+    .add-btn { display: none; }
+  }
+  @media (min-width: 1025px) {
+    .mobile-header { display: none; }
+    .cards-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1280px) {
+    .cards-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (min-width: 600px) and (max-width: 1024px) {
+    .cards-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- ══════════════════════════════════
+       SIDEBAR (desktop only)
+  ══════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h1>🥫 Pantry</h1>
+      <div class="subtitle">58 items · Last synced 2 min ago</div>
+    </div>
+
+    <div class="sidebar-stats">
+      <div class="sidebar-stat-card">
+        <div class="stat-value">58</div>
+        <div class="stat-label">Total</div>
+      </div>
+      <div class="sidebar-stat-card warn">
+        <div class="stat-value">4</div>
+        <div class="stat-label">Expiring</div>
+      </div>
+      <div class="sidebar-stat-card danger">
+        <div class="stat-value">2</div>
+        <div class="stat-label">Expired</div>
+      </div>
+      <div class="sidebar-stat-card">
+        <div class="stat-value">12</div>
+        <div class="stat-label">No Date</div>
+      </div>
+    </div>
+
+    <!-- Location filter -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Location</div>
+      <ul class="location-list">
+        <li class="location-item active">
+          <span class="loc-icon">🏠</span> All Locations
+          <span class="loc-count">58</span>
+        </li>
+        <li class="location-item">
+          <span class="loc-icon">🗄️</span> Pantry
+          <span class="loc-count">24</span>
+        </li>
+        <li class="location-item">
+          <span class="loc-icon">❄️</span> Fridge
+          <span class="loc-count">18</span>
+        </li>
+        <li class="location-item">
+          <span class="loc-icon">🧊</span> Freezer
+          <span class="loc-count">9</span>
+        </li>
+        <li class="location-item">
+          <span class="loc-icon">🧂</span> Spice Rack
+          <span class="loc-count">7</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Category filter -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Category</div>
+      <ul class="category-list">
+        <li class="category-item active">
+          <div class="cat-color-bar" style="background: var(--primary-500);"></div>
+          <span class="cat-emoji">✨</span> All Categories
+          <span class="cat-count">58</span>
+        </li>
+        <li class="category-item">
+          <div class="cat-color-bar" style="background: var(--cat-dairy-text);"></div>
+          <span class="cat-emoji">🥛</span> Dairy
+          <span class="cat-count">8</span>
+        </li>
+        <li class="category-item">
+          <div class="cat-color-bar" style="background: var(--cat-produce-text);"></div>
+          <span class="cat-emoji">🥬</span> Produce
+          <span class="cat-count">11</span>
+        </li>
+        <li class="category-item">
+          <div class="cat-color-bar" style="background: var(--cat-meat-text);"></div>
+          <span class="cat-emoji">🥩</span> Meat & Protein
+          <span class="cat-count">6</span>
+        </li>
+        <li class="category-item">
+          <div class="cat-color-bar" style="background: var(--cat-grains-text);"></div>
+          <span class="cat-emoji">🍞</span> Grains & Bakery
+          <span class="cat-count">9</span>
+        </li>
+        <li class="category-item">
+          <div class="cat-color-bar" style="background: var(--cat-snacks-text);"></div>
+          <span class="cat-emoji">🍿</span> Snacks
+          <span class="cat-count">7</span>
+        </li>
+        <li class="category-item">
+          <div class="cat-color-bar" style="background: var(--cat-condiments-text);"></div>
+          <span class="cat-emoji">🫙</span> Condiments
+          <span class="cat-count">5</span>
+        </li>
+        <li class="category-item">
+          <div class="cat-color-bar" style="background: var(--cat-frozen-text);"></div>
+          <span class="cat-emoji">🧊</span> Frozen
+          <span class="cat-count">4</span>
+        </li>
+        <li class="category-item">
+          <div class="cat-color-bar" style="background: var(--cat-beverages-text);"></div>
+          <span class="cat-emoji">🥤</span> Beverages
+          <span class="cat-count">5</span>
+        </li>
+        <li class="category-item">
+          <div class="cat-color-bar" style="background: var(--cat-meals-text);"></div>
+          <span class="cat-emoji">🍲</span> Meals & Prepared
+          <span class="cat-count">3</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Sort -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Sort By</div>
+      <div class="sort-group">
+        <div class="sort-option">
+          <span class="sort-icon">📅</span> Expiry Date
+          <span class="sort-dir">↑</span>
+        </div>
+        <div class="sort-option active">
+          <span class="sort-icon">🔤</span> Name
+          <span class="sort-dir">A→Z</span>
+        </div>
+        <div class="sort-option">
+          <span class="sort-icon">🕐</span> Recently Added
+          <span class="sort-dir">↓</span>
+        </div>
+        <div class="sort-option">
+          <span class="sort-icon">🔢</span> Quantity
+          <span class="sort-dir">↓</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════ -->
+  <div class="main-content">
+
+    <!-- Desktop top bar -->
+    <div class="top-bar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" type="text" placeholder="Search pantry items…" value="">
+      </div>
+      <button class="add-btn">+ Add Item</button>
+    </div>
+
+    <!-- Mobile header -->
+    <div class="mobile-header">
+      <div class="mobile-header-row">
+        <h1>🥫 Pantry</h1>
+        <div style="display:flex;gap:8px;">
+          <button class="mobile-icon-btn">🔍</button>
+          <button class="mobile-icon-btn primary">+</button>
+        </div>
+      </div>
+      <div class="mobile-stats">
+        <span class="m-stat"><span class="m-dot" style="background:var(--primary-500)"></span> 58 items</span>
+        <span class="m-stat"><span class="m-dot" style="background:var(--warning)"></span> 4 expiring</span>
+        <span class="m-stat"><span class="m-dot" style="background:var(--danger)"></span> 2 expired</span>
+        <span class="m-stat"><span class="m-dot" style="background:var(--text-muted)"></span> 12 no date</span>
+      </div>
+      <!-- Location tabs -->
+      <div class="loc-tabs">
+        <button class="loc-tab active">All</button>
+        <button class="loc-tab">🗄️ Pantry</button>
+        <button class="loc-tab">❄️ Fridge</button>
+        <button class="loc-tab">🧊 Freezer</button>
+        <button class="loc-tab">🧂 Spice Rack</button>
+      </div>
+      <!-- Category filter pills -->
+      <div class="mobile-filter-row" style="margin-top:8px;">
+        <div class="mobile-filter-inner">
+          <span class="cat-pill all">✨ All</span>
+          <span class="cat-pill inactive" style="background:var(--cat-dairy);color:var(--cat-dairy-text);border-color:transparent;">🥛 Dairy <b>8</b></span>
+          <span class="cat-pill inactive" style="background:var(--cat-produce);color:var(--cat-produce-text);border-color:transparent;">🥬 Produce <b>11</b></span>
+          <span class="cat-pill inactive" style="background:var(--cat-meat);color:var(--cat-meat-text);border-color:transparent;">🥩 Meat <b>6</b></span>
+          <span class="cat-pill inactive" style="background:var(--cat-grains);color:var(--cat-grains-text);border-color:transparent;">🍞 Grains <b>9</b></span>
+          <span class="cat-pill inactive" style="background:var(--cat-snacks);color:var(--cat-snacks-text);border-color:transparent;">🍿 Snacks <b>7</b></span>
+          <span class="cat-pill inactive" style="background:var(--cat-condiments);color:var(--cat-condiments-text);border-color:transparent;">🫙 Condiments <b>5</b></span>
+          <span class="cat-pill inactive" style="background:var(--cat-frozen);color:var(--cat-frozen-text);border-color:transparent;">🧊 Frozen <b>4</b></span>
+          <span class="cat-pill inactive" style="background:var(--cat-beverages);color:var(--cat-beverages-text);border-color:transparent;">🥤 Beverages <b>5</b></span>
+        </div>
+      </div>
+      <div style="height:10px;"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-area">
+
+      <!-- Expiring alert -->
+      <div class="alert-banner">
+        <span class="alert-icon">⏰</span>
+        <div class="alert-text">
+          <div class="alert-title">4 items expiring within 7 days</div>
+          <div class="alert-sub">Organic Whole Milk, Greek Yogurt + 2 more</div>
+        </div>
+        <button class="alert-action">View All</button>
+      </div>
+
+      <!-- Section heading -->
+      <div class="section-head">
+        <h2>All Items</h2>
+        <span class="item-count">58 items</span>
+      </div>
+
+      <!-- Cards grid -->
+      <div class="cards-grid">
+
+        <!-- Card 1: Expiring milk -->
+        <div class="card expiring">
+          <div class="card-body">
+            <span class="card-emoji">🥛</span>
+            <div class="card-info">
+              <div class="card-name">Organic Whole Milk</div>
+              <div class="card-sub">
+                <span class="card-brand">Organic Valley</span>
+                <span class="cat-badge" style="background:var(--cat-dairy);color:var(--cat-dairy-text);">
+                  <span class="cat-dot" style="background:var(--cat-dairy-text);"></span>🥛 Dairy
+                </span>
+                <span class="loc-badge">❄️ Fridge</span>
+                <span class="expiry-badge soon">⏰ 2 days</span>
+              </div>
+            </div>
+            <div class="card-right">
+              <div class="qty-row">
+                <button class="qty-btn">−</button>
+                <span class="qty-val">2</span>
+                <button class="qty-btn">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Bread -->
+        <div class="card">
+          <div class="card-body">
+            <span class="card-emoji">🍞</span>
+            <div class="card-info">
+              <div class="card-name">Whole Wheat Sourdough</div>
+              <div class="card-sub">
+                <span class="card-brand">Dave's Killer Bread</span>
+                <span class="cat-badge" style="background:var(--cat-grains);color:var(--cat-grains-text);">
+                  <span class="cat-dot" style="background:var(--cat-grains-text);"></span>🍞 Grains
+                </span>
+                <span class="loc-badge">🗄️ Pantry</span>
+                <span class="expiry-badge fresh">✓ 8 days</span>
+              </div>
+            </div>
+            <div class="card-right">
+              <div class="qty-row">
+                <button class="qty-btn">−</button>
+                <span class="qty-val">1</span>
+                <button class="qty-btn">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Expired yogurt -->
+        <div class="card expired">
+          <div class="card-body">
+            <span class="card-emoji">🍶</span>
+            <div class="card-info">
+              <div class="card-name">Greek Yogurt Plain</div>
+              <div class="card-sub">
+                <span class="card-brand">Fage</span>
+                <span class="cat-badge" style="background:var(--cat-dairy);color:var(--cat-dairy-text);">
+                  <span class="cat-dot" style="background:var(--cat-dairy-text);"></span>🥛 Dairy
+                </span>
+                <span class="loc-badge">❄️ Fridge</span>
+                <span class="expiry-badge expired">⚠️ Expired</span>
+              </div>
+            </div>
+            <div class="card-right">
+              <div class="qty-row">
+                <button class="qty-btn">−</button>
+                <span class="qty-val">3</span>
+                <button class="qty-btn">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Pasta -->
+        <div class="card">
+          <div class="card-body">
+            <span class="card-emoji">🍝</span>
+            <div class="card-info">
+              <div class="card-name">Penne Rigate</div>
+              <div class="card-sub">
+                <span class="card-brand">Barilla</span>
+                <span class="cat-badge" style="background:var(--cat-grains);color:var(--cat-grains-text);">
+                  <span class="cat-dot" style="background:var(--cat-grains-text);"></span>🍞 Grains
+                </span>
+                <span class="loc-badge">🗄️ Pantry</span>
+              </div>
+            </div>
+            <div class="card-right">
+              <div class="qty-row">
+                <button class="qty-btn">−</button>
+                <span class="qty-val">4</span>
+                <button class="qty-btn">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Avocado -->
+        <div class="card expiring">
+          <div class="card-body">
+            <span class="card-emoji">🥑</span>
+            <div class="card-info">
+              <div class="card-name">Hass Avocados</div>
+              <div class="card-sub">
+                <span class="card-brand">Fresh</span>
+                <span class="cat-badge" style="background:var(--cat-produce);color:var(--cat-produce-text);">
+                  <span class="cat-dot" style="background:var(--cat-produce-text);"></span>🥬 Produce
+                </span>
+                <span class="loc-badge">❄️ Fridge</span>
+                <span class="expiry-badge soon">⏰ 3 days</span>
+              </div>
+            </div>
+            <div class="card-right">
+              <div class="qty-row">
+                <button class="qty-btn">−</button>
+                <span class="qty-val">3</span>
+                <button class="qty-btn">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6: Olive Oil -->
+        <div class="card">
+          <div class="card-body">
+            <span class="card-emoji">🫙</span>
+            <div class="card-info">
+              <div class="card-name">Extra Virgin Olive Oil</div>
+              <div class="card-sub">
+                <span class="card-brand">California Olive Ranch</span>
+                <span class="cat-badge" style="background:var(--cat-condiments);color:var(--cat-condiments-text);">
+                  <span class="cat-dot" style="background:var(--cat-condiments-text);"></span>🫙 Condiments
+                </span>
+                <span class="loc-badge">🗄️ Pantry</span>
+              </div>
+            </div>
+            <div class="card-right">
+              <div class="qty-row">
+                <button class="qty-btn">−</button>
+                <span class="qty-val">1</span>
+                <button class="qty-btn">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 7: Frozen Edamame -->
+        <div class="card">
+          <div class="card-body">
+            <span class="card-emoji">🫛</span>
+            <div class="card-info">
+              <div class="card-name">Shelled Edamame</div>
+              <div class="card-sub">
+                <span class="card-brand">Cascadian Farm</span>
+                <span class="cat-badge" style="background:var(--cat-frozen);color:var(--cat-frozen-text);">
+                  <span class="cat-dot" style="background:var(--cat-frozen-text);"></span>🧊 Frozen
+                </span>
+                <span class="loc-badge">🧊 Freezer</span>
+              </div>
+            </div>
+            <div class="card-right">
+              <div class="qty-row">
+                <button class="qty-btn">−</button>
+                <span class="qty-val">2</span>
+                <button class="qty-btn">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 8: Granola (out of stock) -->
+        <div class="card out-of-stock">
+          <div class="card-body">
+            <span class="card-emoji">🥣</span>
+            <div class="card-info">
+              <div class="card-name">Honey Oat Granola</div>
+              <div class="card-sub">
+                <span class="card-brand">Nature Valley</span>
+                <span class="cat-badge" style="background:var(--cat-snacks);color:var(--cat-snacks-text);">
+                  <span class="cat-dot" style="background:var(--cat-snacks-text);"></span>🍿 Snacks
+                </span>
+                <span class="loc-badge">🗄️ Pantry</span>
+                <span class="expiry-badge" style="background:#F5F5F5;color:var(--text-muted);">📦 Out of stock</span>
+              </div>
+            </div>
+            <div class="card-right">
+              <div class="qty-row">
+                <button class="qty-btn">−</button>
+                <span class="qty-val">0</span>
+                <button class="qty-btn">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 9: Sparkling Water -->
+        <div class="card">
+          <div class="card-body">
+            <span class="card-emoji">💧</span>
+            <div class="card-info">
+              <div class="card-name">Sparkling Water Lemon</div>
+              <div class="card-sub">
+                <span class="card-brand">LaCroix</span>
+                <span class="cat-badge" style="background:var(--cat-beverages);color:var(--cat-beverages-text);">
+                  <span class="cat-dot" style="background:var(--cat-beverages-text);"></span>🥤 Beverages
+                </span>
+                <span class="loc-badge">❄️ Fridge</span>
+              </div>
+            </div>
+            <div class="card-right">
+              <div class="qty-row">
+                <button class="qty-btn">−</button>
+                <span class="qty-val">12</span>
+                <button class="qty-btn">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 10: Chicken Thighs -->
+        <div class="card">
+          <div class="card-body">
+            <span class="card-emoji">🍗</span>
+            <div class="card-info">
+              <div class="card-name">Boneless Chicken Thighs</div>
+              <div class="card-sub">
+                <span class="card-brand">Bell & Evans</span>
+                <span class="cat-badge" style="background:var(--cat-meat);color:var(--cat-meat-text);">
+                  <span class="cat-dot" style="background:var(--cat-meat-text);"></span>🥩 Meat
+                </span>
+                <span class="loc-badge">🧊 Freezer</span>
+                <span class="expiry-badge fresh">✓ 45 days</span>
+              </div>
+            </div>
+            <div class="card-right">
+              <div class="qty-row">
+                <button class="qty-btn">−</button>
+                <span class="qty-val">2</span>
+                <button class="qty-btn">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /cards-grid -->
+    </div><!-- /content-area -->
+  </div><!-- /main-content -->
+</div><!-- /app-shell -->
+</body>
+</html>

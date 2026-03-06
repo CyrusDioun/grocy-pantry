@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept C — Dashboard Pro</title>
+<style>
+  :root {
+    --bg: #F4F6F8;
+    --surface: #FFFFFF;
+    --sidebar-bg: #1E2330;
+    --sidebar-hover: #2A3040;
+    --sidebar-active: #363D50;
+    --sidebar-border: rgba(255,255,255,0.08);
+    --sidebar-text: #C8CDD8;
+    --sidebar-text-muted: #6B7280;
+    --sidebar-accent: #6EBA6D;
+    --primary: #5B8C5A;
+    --primary-light: #7EAF7D;
+    --primary-50: #EDF7ED;
+    --primary-100: #C3E6C4;
+    --warning: #E8A838;
+    --danger: #C75050;
+    --success: #2E7D32;
+    --info: #5B8C9A;
+    --text: #1A202C;
+    --text-secondary: #4A5568;
+    --text-muted: #A0AEC0;
+    --border: #E2E8F0;
+    --border-dark: #CBD5E0;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow: 0 4px 12px rgba(0,0,0,0.08);
+    --radius: 8px;
+    --radius-sm: 5px;
+    --cat-dairy: #EBF0FF;
+    --cat-dairy-text: #3C4DBA;
+    --cat-produce: #E6F4EA;
+    --cat-produce-text: #276B2C;
+    --cat-meat: #FDE8E6;
+    --cat-meat-text: #B71C1C;
+    --cat-grains: #FFF7DE;
+    --cat-grains-text: #C45C00;
+    --cat-snacks: #F3E8FD;
+    --cat-snacks-text: #6A1B9A;
+    --cat-condiments: #FFF0DE;
+    --cat-condiments-text: #9C3A00;
+    --cat-frozen: #DFF6FA;
+    --cat-frozen-text: #006064;
+    --cat-beverages: #E8EAFF;
+    --cat-beverages-text: #283593;
+    --cat-meals: #FDE9E7;
+    --cat-meals-text: #9C2600;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 13.5px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ═══════════════════════════════════════
+     APP SHELL
+  ═══════════════════════════════════════ */
+  .app {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ═══════════════════════════════════════
+     SIDEBAR (dark, data-dense)
+  ═══════════════════════════════════════ */
+  .sidebar {
+    width: 260px;
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+  .sidebar-logo {
+    display: flex; align-items: center; gap: 10px;
+    padding: 18px 16px 16px;
+    border-bottom: 1px solid var(--sidebar-border);
+  }
+  .sidebar-logo .logo-icon {
+    width: 32px; height: 32px;
+    background: var(--sidebar-accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .sidebar-logo .logo-name {
+    font-size: 16px;
+    font-weight: 800;
+    color: #F0F2F5;
+    letter-spacing: -0.3px;
+  }
+  .sidebar-logo .logo-sub {
+    font-size: 10px;
+    color: var(--sidebar-text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* Sidebar stats summary */
+  .sidebar-kpis {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--sidebar-border);
+    border-bottom: 1px solid var(--sidebar-border);
+  }
+  .kpi {
+    background: var(--sidebar-bg);
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .kpi:hover { background: var(--sidebar-hover); }
+  .kpi.active-filter { background: var(--sidebar-active); }
+  .kpi-value {
+    font-size: 22px;
+    font-weight: 900;
+    color: #F0F2F5;
+    line-height: 1;
+  }
+  .kpi-value.warn { color: var(--warning); }
+  .kpi-value.danger { color: var(--danger); }
+  .kpi-value.muted { color: var(--sidebar-text-muted); }
+  .kpi-label {
+    font-size: 10px;
+    color: var(--sidebar-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 3px;
+    font-weight: 600;
+  }
+  .kpi-sparkline {
+    margin-top: 4px;
+    height: 18px;
+    display: flex; align-items: flex-end; gap: 2px;
+  }
+  .spark-bar {
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+    flex: 1;
+    min-width: 3px;
+    transition: height 0.2s;
+  }
+  .spark-bar.hi { background: rgba(110,186,109,0.6); }
+
+  /* Sidebar section */
+  .sb-section {
+    border-bottom: 1px solid var(--sidebar-border);
+  }
+  .sb-section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .sb-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sidebar-text-muted);
+  }
+  .sb-collapse-icon { font-size: 10px; color: var(--sidebar-text-muted); }
+
+  /* Location filter */
+  .sb-filter-list { padding: 2px 8px 8px; }
+  .sb-filter-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.12s;
+    color: var(--sidebar-text);
+    font-size: 13px;
+  }
+  .sb-filter-item:hover { background: var(--sidebar-hover); }
+  .sb-filter-item.active { background: var(--sidebar-active); color: #F0F2F5; }
+  .sb-filter-item .f-icon { font-size: 15px; flex-shrink: 0; width: 20px; text-align: center; }
+  .sb-filter-item .f-label { flex: 1; }
+  .sb-filter-item .f-count {
+    font-size: 11px;
+    color: var(--sidebar-text-muted);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .sb-filter-item.active .f-count { color: var(--sidebar-accent); }
+
+  /* Multi-select category checkboxes */
+  .sb-cat-list { padding: 2px 8px 10px; }
+  .sb-cat-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.12s;
+    color: var(--sidebar-text);
+    font-size: 12.5px;
+  }
+  .sb-cat-item:hover { background: var(--sidebar-hover); }
+  .sb-cat-item.checked { color: #F0F2F5; }
+  .sb-checkbox {
+    width: 15px; height: 15px;
+    border-radius: 4px;
+    border: 1.5px solid var(--sidebar-text-muted);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    transition: all 0.12s;
+    color: transparent;
+    background: transparent;
+  }
+  .sb-cat-item.checked .sb-checkbox {
+    background: var(--sidebar-accent);
+    border-color: var(--sidebar-accent);
+    color: #1E2330;
+  }
+  .sb-cat-item .c-emoji { font-size: 14px; width: 18px; text-align: center; }
+  .sb-cat-item .c-label { flex: 1; }
+  .sb-cat-item .c-count { font-size: 11px; color: var(--sidebar-text-muted); font-variant-numeric: tabular-nums; }
+
+  /* Expiry filter section */
+  .expiry-filter-list { padding: 2px 8px 8px; }
+  .exp-chip {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.12s;
+    color: var(--sidebar-text);
+    font-size: 12.5px;
+  }
+  .exp-chip:hover { background: var(--sidebar-hover); }
+  .exp-chip.active { background: var(--sidebar-active); }
+  .exp-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Sort in sidebar */
+  .sort-list { padding: 2px 8px 8px; }
+  .sort-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 8px; border-radius: var(--radius-sm);
+    cursor: pointer; color: var(--sidebar-text); font-size: 12.5px;
+    transition: background 0.12s;
+  }
+  .sort-item:hover { background: var(--sidebar-hover); }
+  .sort-item.active { color: var(--sidebar-accent); font-weight: 600; }
+  .sort-dir-badge {
+    margin-left: auto;
+    font-size: 11px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px;
+    padding: 1px 5px;
+    color: var(--sidebar-accent);
+  }
+
+  /* ═══════════════════════════════════════
+     MAIN CONTENT
+  ═══════════════════════════════════════ */
+  .main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .search-wrap { position: relative; flex: 1; max-width: 440px; }
+  .search-input {
+    width: 100%;
+    padding: 8px 14px 8px 36px;
+    border: 1.5px solid var(--border-dark);
+    border-radius: var(--radius);
+    font-size: 13.5px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: all 0.15s;
+  }
+  .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-50); }
+  .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--text-muted); }
+
+  .view-toggle {
+    display: flex; gap: 2px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 3px;
+    border: 1px solid var(--border-dark);
+  }
+  .view-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-muted);
+    transition: all 0.12s;
+  }
+  .view-btn.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+  .topbar-actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .btn-primary {
+    padding: 8px 16px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 5px;
+    transition: background 0.15s;
+  }
+  .btn-primary:hover { background: #4A7A49; }
+  .btn-ghost {
+    padding: 7px 12px;
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .btn-ghost:hover { background: var(--bg); }
+
+  /* Active filter chips in topbar */
+  .active-filters {
+    display: flex; gap: 6px; align-items: center;
+    flex-wrap: wrap;
+  }
+  .filter-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid transparent;
+  }
+  .filter-chip .chip-remove {
+    font-size: 10px; cursor: pointer;
+    width: 14px; height: 14px;
+    background: rgba(0,0,0,0.1);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-left: 2px;
+  }
+
+  /* ── Content area ── */
+  .content { padding: 16px 20px 80px; }
+
+  /* ── Summary bar ── */
+  .summary-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .summary-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .summary-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+  .summary-card.active-filter { border-color: var(--primary); }
+  .summary-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .summary-card.total::before { background: var(--primary); }
+  .summary-card.expiring::before { background: var(--warning); }
+  .summary-card.expired::before { background: var(--danger); }
+  .summary-card.nodate::before { background: var(--text-muted); }
+
+  .sc-value { font-size: 28px; font-weight: 900; line-height: 1; }
+  .sc-value.warn { color: var(--warning); }
+  .sc-value.danger { color: var(--danger); }
+  .sc-value.muted { color: var(--text-muted); }
+  .sc-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; color: var(--text-muted); margin-top: 4px; }
+  .sc-spark {
+    display: flex; align-items: flex-end; gap: 2px;
+    height: 24px; margin-top: 6px;
+  }
+  .sc-bar {
+    flex: 1; border-radius: 2px;
+    background: var(--border);
+    min-width: 3px;
+  }
+  .sc-bar.filled { background: var(--primary-100); }
+  .sc-bar.filled.warn { background: #FDEDC5; }
+  .sc-bar.filled.danger { background: #FDDCDC; }
+
+  /* ── List view (rows on desktop) ── */
+  .table-wrap {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+  .table-header {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr 1fr 1fr 100px;
+    gap: 0;
+    padding: 9px 16px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+  .th { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+  .th.sorted { color: var(--primary); }
+  .th .sort-arrow { font-size: 10px; }
+
+  .table-row {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr 1fr 1fr 100px;
+    gap: 0;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    transition: background 0.1s;
+    cursor: pointer;
+    position: relative;
+  }
+  .table-row:last-child { border-bottom: none; }
+  .table-row:hover { background: #F8FAFC; }
+  .table-row.expiring { border-left: 3px solid var(--warning); padding-left: 13px; }
+  .table-row.expired { border-left: 3px solid var(--danger); padding-left: 13px; }
+  .table-row.out-of-stock { opacity: 0.45; }
+
+  .row-name-cell { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .row-emoji { font-size: 22px; flex-shrink: 0; }
+  .row-name-info { min-width: 0; }
+  .row-name { font-size: 13.5px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row-brand { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+  .row-cat {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+  .row-location { font-size: 12px; color: var(--text-secondary); }
+  .row-expiry { font-size: 12px; font-weight: 600; }
+  .row-expiry.soon { color: var(--warning); }
+  .row-expiry.expired { color: var(--danger); }
+  .row-expiry.fresh { color: var(--success); }
+  .row-expiry.none { color: var(--text-muted); font-weight: 400; }
+
+  .row-qty { display: flex; align-items: center; gap: 5px; justify-content: flex-end; }
+  .qty-btn {
+    width: 26px; height: 26px;
+    border-radius: 4px;
+    border: 1px solid var(--border-dark);
+    background: var(--bg);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--primary);
+    transition: all 0.12s;
+    line-height: 1;
+  }
+  .qty-btn:hover { border-color: var(--primary); background: var(--primary-50); }
+  .qty-val { font-size: 14px; font-weight: 800; min-width: 20px; text-align: center; }
+
+  /* Cards view (mobile + mobile-forced desktop) */
+  .cards-grid {
+    display: none;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .mobile-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    padding: 12px 14px;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer;
+  }
+  .mobile-card.expiring { border-left: 3px solid var(--warning); }
+  .mobile-card.expired { border-left: 3px solid var(--danger); }
+  .mc-emoji { font-size: 26px; width: 36px; text-align: center; flex-shrink: 0; }
+  .mc-info { flex: 1; min-width: 0; }
+  .mc-name { font-size: 14px; font-weight: 700; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mc-sub { display: flex; align-items: center; gap: 5px; margin-top: 3px; flex-wrap: wrap; }
+  .mc-cat { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 20px; }
+  .mc-loc { font-size: 11px; color: var(--text-muted); }
+  .mc-exp { font-size: 11px; font-weight: 600; }
+  .mc-exp.soon { color: var(--warning); }
+  .mc-exp.expired { color: var(--danger); }
+  .mc-exp.fresh { color: var(--success); }
+  .mc-qty { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+
+  /* ── Mobile header ── */
+  .mobile-top {
+    display: none;
+    background: var(--sidebar-bg);
+    padding: 12px 16px;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .mobile-logo { font-size: 18px; font-weight: 900; color: #F0F2F5; flex: 1; }
+  .mobile-icon-btn {
+    width: 34px; height: 34px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #F0F2F5;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .mobile-icon-btn.primary { background: var(--primary); }
+
+  /* Mobile filter strip */
+  .mobile-filter-area {
+    display: none;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-direction: column;
+    position: sticky;
+    top: 58px;
+    z-index: 90;
+  }
+  .mobile-filter-row {
+    overflow-x: auto; scrollbar-width: none;
+    padding: 10px 12px;
+  }
+  .mobile-filter-row::-webkit-scrollbar { display: none; }
+  .mobile-filter-inner { display: flex; gap: 6px; width: max-content; }
+  .filter-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 5px 11px;
+    border-radius: 20px;
+    border: 1.5px solid transparent;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.12s;
+  }
+  .filter-pill.all {
+    background: var(--sidebar-bg);
+    color: white;
+  }
+  .filter-pill.inactive {
+    background: var(--bg);
+    color: var(--text-secondary);
+    border-color: var(--border-dark);
+  }
+  .mobile-stats-mini {
+    display: flex; gap: 0;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .msm-chip {
+    flex: 1; text-align: center;
+    padding: 6px 4px;
+    border-right: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .msm-chip:last-child { border-right: none; }
+  .msm-val { font-weight: 800; font-size: 16px; }
+  .msm-val.warn { color: var(--warning); }
+  .msm-val.danger { color: var(--danger); }
+  .msm-lbl { font-size: 10px; color: var(--text-muted); }
+
+  /* Empty state */
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 48px 24px; text-align: center;
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+  .empty-state .e-icon { font-size: 44px; margin-bottom: 14px; }
+  .empty-state h3 { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .empty-state p { font-size: 13px; color: var(--text-muted); max-width: 260px; line-height: 1.6; }
+  .empty-cta {
+    margin-top: 16px; padding: 9px 20px;
+    background: var(--primary); color: white;
+    border: none; border-radius: var(--radius);
+    font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1024px) {
+    .sidebar { display: none; }
+    .topbar { display: none; }
+    .mobile-top { display: flex; }
+    .mobile-filter-area { display: flex; }
+    .summary-bar { display: none; }
+    .table-wrap { display: none; }
+    .cards-grid { display: grid; }
+    .content { padding: 12px 12px 80px; }
+  }
+  @media (min-width: 1025px) {
+    .mobile-top { display: none; }
+    .mobile-filter-area { display: none; }
+    .table-wrap { display: block; }
+    .cards-grid { display: none; }
+    .summary-bar { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (min-width: 600px) and (max-width: 1024px) {
+    .cards-grid { grid-template-columns: repeat(2, 1fr); }
+    .mobile-filter-area { top: 58px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ══════════════════════════════════════
+       DARK SIDEBAR (desktop)
+  ══════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🥫</div>
+      <div>
+        <div class="logo-name">Pantry</div>
+        <div class="logo-sub">58 items · synced 2m ago</div>
+      </div>
+    </div>
+
+    <!-- KPI cards with sparklines -->
+    <div class="sidebar-kpis">
+      <div class="kpi">
+        <div class="kpi-value">58</div>
+        <div class="kpi-label">Total Items</div>
+        <div class="kpi-sparkline">
+          <div class="spark-bar" style="height:8px;"></div>
+          <div class="spark-bar hi" style="height:11px;"></div>
+          <div class="spark-bar hi" style="height:14px;"></div>
+          <div class="spark-bar hi" style="height:12px;"></div>
+          <div class="spark-bar hi" style="height:18px;"></div>
+        </div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value warn">4</div>
+        <div class="kpi-label">Expiring</div>
+        <div class="kpi-sparkline">
+          <div class="spark-bar" style="height:5px;"></div>
+          <div class="spark-bar" style="height:7px;"></div>
+          <div class="spark-bar" style="height:6px;background:rgba(232,168,56,0.4)"></div>
+          <div class="spark-bar" style="height:10px;background:rgba(232,168,56,0.5)"></div>
+          <div class="spark-bar" style="height:14px;background:rgba(232,168,56,0.7)"></div>
+        </div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value danger">2</div>
+        <div class="kpi-label">Expired</div>
+        <div class="kpi-sparkline">
+          <div class="spark-bar" style="height:4px;background:rgba(199,80,80,0.3)"></div>
+          <div class="spark-bar" style="height:4px;"></div>
+          <div class="spark-bar" style="height:6px;background:rgba(199,80,80,0.4)"></div>
+          <div class="spark-bar" style="height:4px;"></div>
+          <div class="spark-bar" style="height:8px;background:rgba(199,80,80,0.6)"></div>
+        </div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value muted">12</div>
+        <div class="kpi-label">No Date</div>
+        <div class="kpi-sparkline">
+          <div class="spark-bar" style="height:10px;"></div>
+          <div class="spark-bar" style="height:12px;"></div>
+          <div class="spark-bar" style="height:9px;"></div>
+          <div class="spark-bar" style="height:11px;"></div>
+          <div class="spark-bar" style="height:10px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Location -->
+    <div class="sb-section">
+      <div class="sb-section-header">
+        <span class="sb-section-title">Location</span>
+        <span class="sb-collapse-icon">▾</span>
+      </div>
+      <div class="sb-filter-list">
+        <div class="sb-filter-item active">
+          <span class="f-icon">🏠</span>
+          <span class="f-label">All Locations</span>
+          <span class="f-count">58</span>
+        </div>
+        <div class="sb-filter-item">
+          <span class="f-icon">🗄️</span>
+          <span class="f-label">Pantry</span>
+          <span class="f-count">24</span>
+        </div>
+        <div class="sb-filter-item">
+          <span class="f-icon">❄️</span>
+          <span class="f-label">Fridge</span>
+          <span class="f-count">18</span>
+        </div>
+        <div class="sb-filter-item">
+          <span class="f-icon">🧊</span>
+          <span class="f-label">Freezer</span>
+          <span class="f-count">9</span>
+        </div>
+        <div class="sb-filter-item">
+          <span class="f-icon">🧂</span>
+          <span class="f-label">Spice Rack</span>
+          <span class="f-count">7</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category (multi-select checkboxes) -->
+    <div class="sb-section">
+      <div class="sb-section-header">
+        <span class="sb-section-title">Category <span style="color:#4B5563;font-size:10px;font-weight:400;">(multi-select)</span></span>
+        <span class="sb-collapse-icon">▾</span>
+      </div>
+      <div class="sb-cat-list">
+        <div class="sb-cat-item checked">
+          <div class="sb-checkbox">✓</div>
+          <span class="c-emoji">🥛</span>
+          <span class="c-label">Dairy</span>
+          <span class="c-count">8</span>
+        </div>
+        <div class="sb-cat-item checked">
+          <div class="sb-checkbox">✓</div>
+          <span class="c-emoji">🥬</span>
+          <span class="c-label">Produce</span>
+          <span class="c-count">11</span>
+        </div>
+        <div class="sb-cat-item">
+          <div class="sb-checkbox"></div>
+          <span class="c-emoji">🥩</span>
+          <span class="c-label">Meat & Protein</span>
+          <span class="c-count">6</span>
+        </div>
+        <div class="sb-cat-item">
+          <div class="sb-checkbox"></div>
+          <span class="c-emoji">🍞</span>
+          <span class="c-label">Grains & Bakery</span>
+          <span class="c-count">9</span>
+        </div>
+        <div class="sb-cat-item">
+          <div class="sb-checkbox"></div>
+          <span class="c-emoji">🍿</span>
+          <span class="c-label">Snacks</span>
+          <span class="c-count">7</span>
+        </div>
+        <div class="sb-cat-item">
+          <div class="sb-checkbox"></div>
+          <span class="c-emoji">🫙</span>
+          <span class="c-label">Condiments</span>
+          <span class="c-count">5</span>
+        </div>
+        <div class="sb-cat-item">
+          <div class="sb-checkbox"></div>
+          <span class="c-emoji">🧊</span>
+          <span class="c-label">Frozen</span>
+          <span class="c-count">4</span>
+        </div>
+        <div class="sb-cat-item">
+          <div class="sb-checkbox"></div>
+          <span class="c-emoji">🥤</span>
+          <span class="c-label">Beverages</span>
+          <span class="c-count">5</span>
+        </div>
+        <div class="sb-cat-item">
+          <div class="sb-checkbox"></div>
+          <span class="c-emoji">🍲</span>
+          <span class="c-label">Meals</span>
+          <span class="c-count">3</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Expiry filter -->
+    <div class="sb-section">
+      <div class="sb-section-header">
+        <span class="sb-section-title">Expiry Status</span>
+        <span class="sb-collapse-icon">▾</span>
+      </div>
+      <div class="expiry-filter-list">
+        <div class="exp-chip">
+          <div class="exp-dot" style="background:var(--primary);"></div>
+          <span style="flex:1;color:var(--sidebar-text)">Fresh (>7 days)</span>
+          <span style="font-size:11px;color:var(--sidebar-text-muted)">40</span>
+        </div>
+        <div class="exp-chip">
+          <div class="exp-dot" style="background:var(--warning);"></div>
+          <span style="flex:1;color:var(--sidebar-text)">Expiring soon</span>
+          <span style="font-size:11px;color:var(--warning)">4</span>
+        </div>
+        <div class="exp-chip">
+          <div class="exp-dot" style="background:var(--danger);"></div>
+          <span style="flex:1;color:var(--sidebar-text)">Expired</span>
+          <span style="font-size:11px;color:var(--danger)">2</span>
+        </div>
+        <div class="exp-chip">
+          <div class="exp-dot" style="background:var(--sidebar-text-muted);"></div>
+          <span style="flex:1;color:var(--sidebar-text)">No date</span>
+          <span style="font-size:11px;color:var(--sidebar-text-muted)">12</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sort -->
+    <div class="sb-section">
+      <div class="sb-section-header">
+        <span class="sb-section-title">Sort By</span>
+        <span class="sb-collapse-icon">▾</span>
+      </div>
+      <div class="sort-list">
+        <div class="sort-item">
+          <span>📅</span> Expiry Date
+          <span class="sort-dir-badge">↑</span>
+        </div>
+        <div class="sort-item active">
+          <span>🔤</span> Name
+          <span class="sort-dir-badge">A→Z</span>
+        </div>
+        <div class="sort-item">
+          <span>🕐</span> Recently Added
+          <span class="sort-dir-badge">↓</span>
+        </div>
+        <div class="sort-item">
+          <span>🔢</span> Quantity
+          <span class="sort-dir-badge">↓</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════════ -->
+  <div class="main">
+
+    <!-- Mobile top bar -->
+    <div class="mobile-top">
+      <span class="mobile-logo">🥫 Pantry</span>
+      <button class="mobile-icon-btn">🔍</button>
+      <button class="mobile-icon-btn">⚙️</button>
+      <button class="mobile-icon-btn primary">+</button>
+    </div>
+
+    <!-- Mobile filters -->
+    <div class="mobile-filter-area">
+      <div class="mobile-filter-row">
+        <div class="mobile-filter-inner">
+          <span class="filter-pill all">✨ All</span>
+          <span class="filter-pill inactive">🥛 Dairy <b>8</b></span>
+          <span class="filter-pill inactive">🥬 Produce <b>11</b></span>
+          <span class="filter-pill inactive">🥩 Meat <b>6</b></span>
+          <span class="filter-pill inactive">🍞 Grains <b>9</b></span>
+          <span class="filter-pill inactive">🍿 Snacks <b>7</b></span>
+          <span class="filter-pill inactive">🫙 Condiments <b>5</b></span>
+          <span class="filter-pill inactive">🧊 Frozen <b>4</b></span>
+          <span class="filter-pill inactive">🥤 Drinks <b>5</b></span>
+        </div>
+      </div>
+      <div class="mobile-stats-mini">
+        <div class="msm-chip"><div class="msm-val">58</div><div class="msm-lbl">total</div></div>
+        <div class="msm-chip"><div class="msm-val warn">4</div><div class="msm-lbl">expiring</div></div>
+        <div class="msm-chip"><div class="msm-val danger">2</div><div class="msm-lbl">expired</div></div>
+        <div class="msm-chip"><div class="msm-val" style="color:var(--text-muted)">12</div><div class="msm-lbl">no date</div></div>
+      </div>
+    </div>
+
+    <!-- Desktop top bar -->
+    <div class="topbar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" type="text" placeholder="Search pantry…">
+      </div>
+      <div class="view-toggle">
+        <button class="view-btn">☰</button>
+        <button class="view-btn active">⊞</button>
+      </div>
+      <div class="active-filters">
+        <span class="filter-chip" style="background:var(--cat-dairy);color:var(--cat-dairy-text);">
+          🥛 Dairy <span class="chip-remove">×</span>
+        </span>
+        <span class="filter-chip" style="background:var(--cat-produce);color:var(--cat-produce-text);">
+          🥬 Produce <span class="chip-remove">×</span>
+        </span>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn-ghost">↓ Export</button>
+        <button class="btn-primary">+ Add Item</button>
+      </div>
+    </div>
+
+    <!-- Main content area -->
+    <div class="content">
+
+      <!-- Summary cards -->
+      <div class="summary-bar">
+        <div class="summary-card total">
+          <div class="sc-value">58</div>
+          <div class="sc-label">Total Items</div>
+          <div class="sc-spark">
+            <div class="sc-bar filled" style="height:50%"></div>
+            <div class="sc-bar filled" style="height:60%"></div>
+            <div class="sc-bar filled" style="height:70%"></div>
+            <div class="sc-bar filled" style="height:65%"></div>
+            <div class="sc-bar filled" style="height:100%"></div>
+          </div>
+        </div>
+        <div class="summary-card expiring">
+          <div class="sc-value warn">4</div>
+          <div class="sc-label">Expiring ≤7 days</div>
+          <div class="sc-spark">
+            <div class="sc-bar filled warn" style="height:30%"></div>
+            <div class="sc-bar filled warn" style="height:45%"></div>
+            <div class="sc-bar filled warn" style="height:55%"></div>
+            <div class="sc-bar filled warn" style="height:70%"></div>
+            <div class="sc-bar filled warn" style="height:100%"></div>
+          </div>
+        </div>
+        <div class="summary-card expired">
+          <div class="sc-value danger">2</div>
+          <div class="sc-label">Expired</div>
+          <div class="sc-spark">
+            <div class="sc-bar filled danger" style="height:40%"></div>
+            <div class="sc-bar" style="height:30%"></div>
+            <div class="sc-bar filled danger" style="height:60%"></div>
+            <div class="sc-bar" style="height:20%"></div>
+            <div class="sc-bar filled danger" style="height:100%"></div>
+          </div>
+        </div>
+        <div class="summary-card nodate">
+          <div class="sc-value muted">12</div>
+          <div class="sc-label">No Expiry Date</div>
+          <div class="sc-spark">
+            <div class="sc-bar" style="height:70%"></div>
+            <div class="sc-bar" style="height:80%"></div>
+            <div class="sc-bar" style="height:60%"></div>
+            <div class="sc-bar" style="height:90%"></div>
+            <div class="sc-bar" style="height:75%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop: data table -->
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="th sorted">Product <span class="sort-arrow">↑</span></div>
+          <div class="th">Category</div>
+          <div class="th">Location</div>
+          <div class="th">Expiry</div>
+          <div class="th" style="justify-content:flex-end">Qty</div>
+        </div>
+
+        <!-- Row: expiring milk -->
+        <div class="table-row expiring">
+          <div class="row-name-cell">
+            <span class="row-emoji">🥛</span>
+            <div class="row-name-info">
+              <div class="row-name">Organic Whole Milk</div>
+              <div class="row-brand">Organic Valley</div>
+            </div>
+          </div>
+          <div>
+            <span class="row-cat" style="background:var(--cat-dairy);color:var(--cat-dairy-text);">🥛 Dairy</span>
+          </div>
+          <div class="row-location">❄️ Fridge</div>
+          <div class="row-expiry soon">⏰ 2 days</div>
+          <div class="row-qty">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">2</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+
+        <!-- Row: expired yogurt -->
+        <div class="table-row expired">
+          <div class="row-name-cell">
+            <span class="row-emoji">🍶</span>
+            <div class="row-name-info">
+              <div class="row-name">Greek Yogurt Plain</div>
+              <div class="row-brand">Fage Total 0%</div>
+            </div>
+          </div>
+          <div>
+            <span class="row-cat" style="background:var(--cat-dairy);color:var(--cat-dairy-text);">🥛 Dairy</span>
+          </div>
+          <div class="row-location">❄️ Fridge</div>
+          <div class="row-expiry expired">⚠️ Expired</div>
+          <div class="row-qty">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">3</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+
+        <!-- Row: avocados -->
+        <div class="table-row expiring">
+          <div class="row-name-cell">
+            <span class="row-emoji">🥑</span>
+            <div class="row-name-info">
+              <div class="row-name">Hass Avocados</div>
+              <div class="row-brand">Fresh · Organic</div>
+            </div>
+          </div>
+          <div>
+            <span class="row-cat" style="background:var(--cat-produce);color:var(--cat-produce-text);">🥬 Produce</span>
+          </div>
+          <div class="row-location">❄️ Fridge</div>
+          <div class="row-expiry soon">⏰ 3 days</div>
+          <div class="row-qty">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">3</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+
+        <!-- Row: sharp cheddar -->
+        <div class="table-row">
+          <div class="row-name-cell">
+            <span class="row-emoji">🧀</span>
+            <div class="row-name-info">
+              <div class="row-name">Sharp Cheddar Block</div>
+              <div class="row-brand">Tillamook</div>
+            </div>
+          </div>
+          <div>
+            <span class="row-cat" style="background:var(--cat-dairy);color:var(--cat-dairy-text);">🥛 Dairy</span>
+          </div>
+          <div class="row-location">❄️ Fridge</div>
+          <div class="row-expiry fresh">✓ 22 days</div>
+          <div class="row-qty">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">1</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+
+        <!-- Row: lemons -->
+        <div class="table-row">
+          <div class="row-name-cell">
+            <span class="row-emoji">🍋</span>
+            <div class="row-name-info">
+              <div class="row-name">Lemons</div>
+              <div class="row-brand">Fresh</div>
+            </div>
+          </div>
+          <div>
+            <span class="row-cat" style="background:var(--cat-produce);color:var(--cat-produce-text);">🥬 Produce</span>
+          </div>
+          <div class="row-location">❄️ Fridge</div>
+          <div class="row-expiry fresh">✓ 14 days</div>
+          <div class="row-qty">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">4</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+
+        <!-- Row: onions -->
+        <div class="table-row">
+          <div class="row-name-cell">
+            <span class="row-emoji">🧅</span>
+            <div class="row-name-info">
+              <div class="row-name">Yellow Onions</div>
+              <div class="row-brand">Fresh</div>
+            </div>
+          </div>
+          <div>
+            <span class="row-cat" style="background:var(--cat-produce);color:var(--cat-produce-text);">🥬 Produce</span>
+          </div>
+          <div class="row-location">🗄️ Pantry</div>
+          <div class="row-expiry none">— No date</div>
+          <div class="row-qty">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">5</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+
+        <!-- Row: sparkling water -->
+        <div class="table-row">
+          <div class="row-name-cell">
+            <span class="row-emoji">💧</span>
+            <div class="row-name-info">
+              <div class="row-name">Sparkling Water Lemon</div>
+              <div class="row-brand">LaCroix</div>
+            </div>
+          </div>
+          <div>
+            <span class="row-cat" style="background:var(--cat-beverages);color:var(--cat-beverages-text);">🥤 Beverages</span>
+          </div>
+          <div class="row-location">❄️ Fridge</div>
+          <div class="row-expiry none">— No date</div>
+          <div class="row-qty">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">12</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+
+        <!-- Row: granola out of stock -->
+        <div class="table-row out-of-stock">
+          <div class="row-name-cell">
+            <span class="row-emoji">🥣</span>
+            <div class="row-name-info">
+              <div class="row-name">Honey Oat Granola <span style="font-size:11px;font-weight:400;color:var(--text-muted)">· Out of stock</span></div>
+              <div class="row-brand">Nature Valley</div>
+            </div>
+          </div>
+          <div>
+            <span class="row-cat" style="background:var(--cat-snacks);color:var(--cat-snacks-text);">🍿 Snacks</span>
+          </div>
+          <div class="row-location">🗄️ Pantry</div>
+          <div class="row-expiry none">—</div>
+          <div class="row-qty">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">0</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+
+        <!-- Row: edamame -->
+        <div class="table-row">
+          <div class="row-name-cell">
+            <span class="row-emoji">🫛</span>
+            <div class="row-name-info">
+              <div class="row-name">Shelled Edamame</div>
+              <div class="row-brand">Cascadian Farm</div>
+            </div>
+          </div>
+          <div>
+            <span class="row-cat" style="background:var(--cat-frozen);color:var(--cat-frozen-text);">🧊 Frozen</span>
+          </div>
+          <div class="row-location">🧊 Freezer</div>
+          <div class="row-expiry fresh">✓ 180 days</div>
+          <div class="row-qty">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">2</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+
+        <!-- Row: chicken -->
+        <div class="table-row">
+          <div class="row-name-cell">
+            <span class="row-emoji">🍗</span>
+            <div class="row-name-info">
+              <div class="row-name">Boneless Chicken Thighs</div>
+              <div class="row-brand">Bell & Evans</div>
+            </div>
+          </div>
+          <div>
+            <span class="row-cat" style="background:var(--cat-meat);color:var(--cat-meat-text);">🥩 Meat</span>
+          </div>
+          <div class="row-location">🧊 Freezer</div>
+          <div class="row-expiry fresh">✓ 45 days</div>
+          <div class="row-qty">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">2</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+
+      </div><!-- /table-wrap -->
+
+      <!-- Mobile cards -->
+      <div class="cards-grid">
+        <div class="mobile-card expiring">
+          <span class="mc-emoji">🥛</span>
+          <div class="mc-info">
+            <div class="mc-name">Organic Whole Milk</div>
+            <div class="mc-sub">
+              <span class="mc-cat" style="background:var(--cat-dairy);color:var(--cat-dairy-text);">🥛 Dairy</span>
+              <span class="mc-loc">❄️ Fridge</span>
+              <span class="mc-exp soon">⏰ 2 days</span>
+            </div>
+          </div>
+          <div class="mc-qty">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">2</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+        <div class="mobile-card expired">
+          <span class="mc-emoji">🍶</span>
+          <div class="mc-info">
+            <div class="mc-name">Greek Yogurt Plain</div>
+            <div class="mc-sub">
+              <span class="mc-cat" style="background:var(--cat-dairy);color:var(--cat-dairy-text);">🥛 Dairy</span>
+              <span class="mc-loc">❄️ Fridge</span>
+              <span class="mc-exp expired">⚠️ Expired</span>
+            </div>
+          </div>
+          <div class="mc-qty">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">3</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+        <div class="mobile-card expiring">
+          <span class="mc-emoji">🥑</span>
+          <div class="mc-info">
+            <div class="mc-name">Hass Avocados</div>
+            <div class="mc-sub">
+              <span class="mc-cat" style="background:var(--cat-produce);color:var(--cat-produce-text);">🥬 Produce</span>
+              <span class="mc-loc">❄️ Fridge</span>
+              <span class="mc-exp soon">⏰ 3 days</span>
+            </div>
+          </div>
+          <div class="mc-qty">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">3</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+        <div class="mobile-card">
+          <span class="mc-emoji">🍞</span>
+          <div class="mc-info">
+            <div class="mc-name">Whole Wheat Sourdough</div>
+            <div class="mc-sub">
+              <span class="mc-cat" style="background:var(--cat-grains);color:var(--cat-grains-text);">🍞 Grains</span>
+              <span class="mc-loc">🗄️ Pantry</span>
+              <span class="mc-exp fresh">✓ 8 days</span>
+            </div>
+          </div>
+          <div class="mc-qty">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">1</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+        <div class="mobile-card">
+          <span class="mc-emoji">💧</span>
+          <div class="mc-info">
+            <div class="mc-name">Sparkling Water Lemon</div>
+            <div class="mc-sub">
+              <span class="mc-cat" style="background:var(--cat-beverages);color:var(--cat-beverages-text);">🥤 Beverages</span>
+              <span class="mc-loc">❄️ Fridge</span>
+            </div>
+          </div>
+          <div class="mc-qty">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">12</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+        <div class="mobile-card">
+          <span class="mc-emoji">🫛</span>
+          <div class="mc-info">
+            <div class="mc-name">Shelled Edamame</div>
+            <div class="mc-sub">
+              <span class="mc-cat" style="background:var(--cat-frozen);color:var(--cat-frozen-text);">🧊 Frozen</span>
+              <span class="mc-loc">🧊 Freezer</span>
+              <span class="mc-exp fresh">✓ 180d</span>
+            </div>
+          </div>
+          <div class="mc-qty">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">2</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div><!-- /cards-grid -->
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+</body>
+</html>

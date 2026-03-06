@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept B — Clean Market</title>
+<style>
+  :root {
+    --bg: #FAFAF8;
+    --card: #FFFFFF;
+    --primary-500: #5B8C5A;
+    --primary-600: #4A7A49;
+    --primary-50: #EDF7ED;
+    --warning: #E8A838;
+    --danger: #C75050;
+    --text: #1A1A1A;
+    --text-secondary: #555;
+    --text-muted: #999;
+    --border: #E5E5E0;
+    --border-dark: #CCC;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06);
+    --radius: 6px;
+    --radius-sm: 4px;
+    --cat-dairy: #E8F0FE;
+    --cat-dairy-text: #3C4DBA;
+    --cat-produce: #E6F4EA;
+    --cat-produce-text: #2E7D32;
+    --cat-meat: #FCE8E6;
+    --cat-meat-text: #B71C1C;
+    --cat-grains: #FFF8E1;
+    --cat-grains-text: #E65100;
+    --cat-snacks: #F3E8FD;
+    --cat-snacks-text: #6A1B9A;
+    --cat-condiments: #FFF3E0;
+    --cat-condiments-text: #BF360C;
+    --cat-frozen: #E0F7FA;
+    --cat-frozen-text: #006064;
+    --cat-beverages: #E8EAF6;
+    --cat-beverages-text: #283593;
+    --cat-meals: #FBE9E7;
+    --cat-meals-text: #BF360C;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ═══════════════════════════════
+     HEADER (shared mobile+desktop)
+  ═══════════════════════════════ */
+  .site-header {
+    background: var(--card);
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  /* Top strip: logo + search + actions */
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    display: flex; align-items: center; gap: 8px;
+    white-space: nowrap;
+  }
+  .logo-emoji { font-size: 22px; }
+  .logo-text {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+  .logo-text span { color: var(--primary-500); }
+
+  .header-search {
+    flex: 1;
+    max-width: 480px;
+    position: relative;
+  }
+  .header-search input {
+    width: 100%;
+    padding: 9px 16px 9px 38px;
+    border: 1.5px solid var(--border-dark);
+    border-radius: var(--radius);
+    font-size: 14px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .header-search input:focus { border-color: var(--primary-500); }
+  .header-search .search-ico {
+    position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 15px; color: var(--text-muted);
+  }
+
+  .header-actions {
+    display: flex; align-items: center; gap: 10px;
+    margin-left: auto;
+  }
+
+  /* Location + Sort top bar (desktop) */
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 24px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .header-controls::-webkit-scrollbar { display: none; }
+
+  .ctrl-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px 10px 0;
+    border-right: 1px solid var(--border);
+    margin-right: 16px;
+    white-space: nowrap;
+  }
+  .ctrl-group:last-child { border-right: none; }
+  .ctrl-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .ctrl-select {
+    padding: 5px 28px 5px 10px;
+    border: 1.5px solid var(--border-dark);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--card);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 9px center;
+    cursor: pointer;
+  }
+  .sort-pills { display: flex; gap: 4px; }
+  .sort-pill {
+    padding: 5px 11px;
+    border: 1.5px solid var(--border-dark);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .sort-pill.active {
+    background: var(--text);
+    border-color: var(--text);
+    color: white;
+  }
+  .sort-dir { font-size: 10px; opacity: 0.8; }
+
+  /* Stats strip */
+  .stats-strip {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: #FAFAF8;
+    border-top: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .stats-strip::-webkit-scrollbar { display: none; }
+  .stat-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    border-right: 1px solid var(--border);
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: background 0.12s;
+    white-space: nowrap;
+  }
+  .stat-chip:hover { background: #F0F0EC; }
+  .stat-chip.active-filter { background: var(--primary-50); }
+  .stat-chip .stat-n {
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--text);
+  }
+  .stat-chip .stat-n.warn { color: var(--warning); }
+  .stat-chip .stat-n.danger { color: var(--danger); }
+  .stat-chip .stat-lbl { color: var(--text-secondary); font-size: 11px; }
+
+  /* ═══════════════════════════════
+     CATEGORY ICON GRID (mobile)
+     / DROPDOWN (desktop)
+  ═══════════════════════════════ */
+  .cat-icon-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+  }
+  .cat-icon-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 10px 4px;
+    cursor: pointer;
+    transition: background 0.12s;
+    border-right: 1px solid var(--border);
+    position: relative;
+  }
+  .cat-icon-cell:last-child { border-right: none; }
+  .cat-icon-cell:hover { background: #F5F5F2; }
+  .cat-icon-cell.active { background: var(--primary-50); }
+  .cat-icon-cell.active::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+    background: var(--primary-500);
+  }
+  .cat-icon-cell .cat-ico { font-size: 22px; }
+  .cat-icon-cell .cat-lbl { font-size: 10px; font-weight: 600; color: var(--text-secondary); text-align: center; line-height: 1.2; }
+  .cat-icon-cell .cat-n { font-size: 10px; color: var(--text-muted); }
+
+  /* Second row of categories */
+  .cat-icon-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    background: #F5F5F2;
+  }
+
+  /* ═══════════════════════════════
+     MAIN CONTENT
+  ═══════════════════════════════ */
+  .main { max-width: 1100px; margin: 0 auto; padding: 20px 24px 80px; }
+
+  /* Category section groupings */
+  .cat-section { margin-bottom: 32px; }
+  .cat-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 0 10px;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 0;
+    cursor: pointer;
+  }
+  .cat-section-header .cat-color-chip {
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .cat-section-header h2 {
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text);
+    flex: 1;
+  }
+  .cat-section-header .section-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+    background: var(--border);
+    border-radius: 3px;
+    padding: 2px 7px;
+  }
+  .cat-section-header .collapse-arrow {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* List-style items within a section */
+  .item-list { display: flex; flex-direction: column; }
+  .item-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.1s;
+    position: relative;
+  }
+  .item-row:hover { background: #FAFAF7; }
+  .item-row.expiring { border-left: 4px solid var(--warning); padding-left: 10px; }
+  .item-row.expired { border-left: 4px solid var(--danger); padding-left: 10px; }
+  .item-row.out-of-stock { opacity: 0.45; }
+
+  .item-emoji { font-size: 26px; width: 34px; text-align: center; flex-shrink: 0; }
+  .item-info { flex: 1; min-width: 0; }
+  .item-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .item-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  }
+  .item-loc-badge {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border-dark);
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .item-expiry {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .item-expiry.soon { color: var(--warning); }
+  .item-expiry.expired { color: var(--danger); }
+  .item-expiry.fresh { color: var(--primary-500); }
+  .item-expiry.none { color: var(--text-muted); }
+
+  .item-right {
+    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  }
+  .qty-row {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .qty-btn {
+    width: 28px; height: 28px;
+    border-radius: 4px;
+    border: 1.5px solid var(--border-dark);
+    background: var(--card);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--primary-600);
+    line-height: 1;
+    transition: all 0.12s;
+  }
+  .qty-btn:hover { border-color: var(--primary-500); background: var(--primary-50); }
+  .qty-val {
+    font-size: 16px;
+    font-weight: 800;
+    min-width: 22px;
+    text-align: center;
+  }
+
+  /* Add item button desktop */
+  .add-item-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 9px 18px;
+    background: var(--text);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .add-item-btn:hover { background: #333; }
+
+  /* Mobile toggle button for category grid */
+  .mobile-cat-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--card);
+    border: none;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    width: 100%;
+  }
+
+  /* Empty state */
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 48px 24px;
+    text-align: center;
+    background: var(--card);
+    border: 1.5px dashed var(--border-dark);
+    border-radius: var(--radius);
+    margin-top: 24px;
+  }
+  .empty-state .e-icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-state h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .empty-state p { font-size: 13px; color: var(--text-muted); max-width: 260px; line-height: 1.6; }
+  .empty-cta {
+    margin-top: 16px;
+    padding: 9px 20px;
+    background: var(--text);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .header-top { padding: 10px 14px; gap: 10px; }
+    .header-search { flex: 1; max-width: none; }
+    .header-controls { display: none; }
+    .main { padding: 0 0 80px; }
+    .cat-section { margin-bottom: 0; }
+    .cat-section-header { padding: 12px 14px 10px; }
+    .item-row { padding: 10px 14px; }
+    .item-row.expiring { padding-left: 10px; }
+    .item-row.expired { padding-left: 10px; }
+    .cat-icon-grid { grid-template-columns: repeat(5, 1fr); }
+    .add-item-btn { display: none; }
+    .logo-text { font-size: 16px; }
+  }
+  @media (min-width: 769px) {
+    .cat-icon-grid { display: none; }
+    .cat-icon-grid-2 { display: none; }
+    .mobile-cat-toggle { display: none; }
+    .stats-strip { border-top: none; }
+    .cat-section-header { padding: 16px 0 10px; }
+  }
+  @media (min-width: 1025px) {
+    .item-list { display: grid; grid-template-columns: repeat(2, 1fr); }
+    .item-row { border-right: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     HEADER
+══════════════════════════════════════ -->
+<header class="site-header">
+  <!-- Top row -->
+  <div class="header-top">
+    <div class="logo">
+      <span class="logo-emoji">🛒</span>
+      <span class="logo-text">My<span>Pantry</span></span>
+    </div>
+    <div class="header-search">
+      <span class="search-ico">🔍</span>
+      <input type="text" placeholder="Search items, brands, categories…">
+    </div>
+    <div class="header-actions">
+      <button class="add-item-btn">+ Add Item</button>
+    </div>
+  </div>
+
+  <!-- Controls: location dropdown + sort pills (desktop) -->
+  <div class="header-controls">
+    <div class="ctrl-group">
+      <span class="ctrl-label">Location</span>
+      <select class="ctrl-select">
+        <option>🏠 All Locations (58)</option>
+        <option>🗄️ Pantry (24)</option>
+        <option>❄️ Fridge (18)</option>
+        <option>🧊 Freezer (9)</option>
+        <option>🧂 Spice Rack (7)</option>
+      </select>
+    </div>
+    <div class="ctrl-group">
+      <span class="ctrl-label">Category</span>
+      <select class="ctrl-select">
+        <option>✨ All Categories</option>
+        <option>🥛 Dairy (8)</option>
+        <option>🥬 Produce (11)</option>
+        <option>🥩 Meat (6)</option>
+        <option>🍞 Grains (9)</option>
+        <option>🍿 Snacks (7)</option>
+        <option>🫙 Condiments (5)</option>
+        <option>🧊 Frozen (4)</option>
+        <option>🥤 Beverages (5)</option>
+        <option>🍲 Meals (3)</option>
+      </select>
+    </div>
+    <div class="ctrl-group">
+      <span class="ctrl-label">Sort</span>
+      <div class="sort-pills">
+        <div class="sort-pill">📅 Expiry <span class="sort-dir">↑</span></div>
+        <div class="sort-pill active">🔤 Name <span class="sort-dir">A→Z</span></div>
+        <div class="sort-pill">🕐 Recent <span class="sort-dir">↓</span></div>
+        <div class="sort-pill">🔢 Qty <span class="sort-dir">↓</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats strip -->
+  <div class="stats-strip">
+    <div class="stat-chip">
+      <span class="stat-n">58</span>
+      <div><div class="stat-lbl">total items</div></div>
+    </div>
+    <div class="stat-chip">
+      <span class="stat-n warn">4</span>
+      <div><div class="stat-lbl">expiring soon</div></div>
+    </div>
+    <div class="stat-chip">
+      <span class="stat-n danger">2</span>
+      <div><div class="stat-lbl">expired</div></div>
+    </div>
+    <div class="stat-chip">
+      <span class="stat-n" style="color:var(--text-muted)">12</span>
+      <div><div class="stat-lbl">no date</div></div>
+    </div>
+    <div class="stat-chip" style="margin-left:auto;border-right:none;font-size:11px;color:var(--text-muted);">
+      Last sync: 2 min ago
+    </div>
+  </div>
+
+  <!-- Category icon grid (mobile) — row 1 -->
+  <div class="cat-icon-grid">
+    <div class="cat-icon-cell active">
+      <span class="cat-ico">✨</span>
+      <span class="cat-lbl">All</span>
+      <span class="cat-n">58</span>
+    </div>
+    <div class="cat-icon-cell">
+      <span class="cat-ico">🥛</span>
+      <span class="cat-lbl">Dairy</span>
+      <span class="cat-n">8</span>
+    </div>
+    <div class="cat-icon-cell">
+      <span class="cat-ico">🥬</span>
+      <span class="cat-lbl">Produce</span>
+      <span class="cat-n">11</span>
+    </div>
+    <div class="cat-icon-cell">
+      <span class="cat-ico">🥩</span>
+      <span class="cat-lbl">Meat</span>
+      <span class="cat-n">6</span>
+    </div>
+    <div class="cat-icon-cell">
+      <span class="cat-ico">🍞</span>
+      <span class="cat-lbl">Grains</span>
+      <span class="cat-n">9</span>
+    </div>
+  </div>
+  <div class="cat-icon-grid-2">
+    <div class="cat-icon-cell">
+      <span class="cat-ico">🍿</span>
+      <span class="cat-lbl">Snacks</span>
+      <span class="cat-n">7</span>
+    </div>
+    <div class="cat-icon-cell">
+      <span class="cat-ico">🫙</span>
+      <span class="cat-lbl">Sauces</span>
+      <span class="cat-n">5</span>
+    </div>
+    <div class="cat-icon-cell">
+      <span class="cat-ico">🧊</span>
+      <span class="cat-lbl">Frozen</span>
+      <span class="cat-n">4</span>
+    </div>
+    <div class="cat-icon-cell">
+      <span class="cat-ico">🥤</span>
+      <span class="cat-lbl">Drinks</span>
+      <span class="cat-n">5</span>
+    </div>
+    <div class="cat-icon-cell">
+      <span class="cat-ico">🍲</span>
+      <span class="cat-lbl">Meals</span>
+      <span class="cat-n">3</span>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════ -->
+<main class="main">
+
+  <!-- ── DAIRY SECTION ── -->
+  <div class="cat-section">
+    <div class="cat-section-header">
+      <div class="cat-color-chip" style="background:var(--cat-dairy-text);opacity:0.8;"></div>
+      <h2>🥛 Dairy</h2>
+      <span class="section-count">8 items</span>
+      <span class="collapse-arrow">▲</span>
+    </div>
+    <div class="item-list">
+      <div class="item-row expiring">
+        <span class="item-emoji">🥛</span>
+        <div class="item-info">
+          <div class="item-name">Organic Whole Milk</div>
+          <div class="item-sub">
+            <span>Organic Valley</span>
+            <span class="item-loc-badge">❄️ Fridge</span>
+            <span class="item-expiry soon">⏰ Expires in 2 days</span>
+          </div>
+        </div>
+        <div class="item-right">
+          <div class="qty-row">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">2</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="item-row expired">
+        <span class="item-emoji">🍶</span>
+        <div class="item-info">
+          <div class="item-name">Greek Yogurt Plain</div>
+          <div class="item-sub">
+            <span>Fage Total 0%</span>
+            <span class="item-loc-badge">❄️ Fridge</span>
+            <span class="item-expiry expired">⚠️ Expired 1 day ago</span>
+          </div>
+        </div>
+        <div class="item-right">
+          <div class="qty-row">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">3</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="item-row">
+        <span class="item-emoji">🧀</span>
+        <div class="item-info">
+          <div class="item-name">Sharp Cheddar Block</div>
+          <div class="item-sub">
+            <span>Tillamook</span>
+            <span class="item-loc-badge">❄️ Fridge</span>
+            <span class="item-expiry fresh">✓ 22 days</span>
+          </div>
+        </div>
+        <div class="item-right">
+          <div class="qty-row">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">1</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PRODUCE SECTION ── -->
+  <div class="cat-section">
+    <div class="cat-section-header">
+      <div class="cat-color-chip" style="background:var(--cat-produce-text);opacity:0.8;"></div>
+      <h2>🥬 Produce</h2>
+      <span class="section-count">11 items</span>
+      <span class="collapse-arrow">▲</span>
+    </div>
+    <div class="item-list">
+      <div class="item-row expiring">
+        <span class="item-emoji">🥑</span>
+        <div class="item-info">
+          <div class="item-name">Hass Avocados</div>
+          <div class="item-sub">
+            <span>Fresh · Organic</span>
+            <span class="item-loc-badge">❄️ Fridge</span>
+            <span class="item-expiry soon">⏰ 3 days</span>
+          </div>
+        </div>
+        <div class="item-right">
+          <div class="qty-row">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">3</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="item-row">
+        <span class="item-emoji">🧅</span>
+        <div class="item-info">
+          <div class="item-name">Yellow Onions</div>
+          <div class="item-sub">
+            <span>Fresh</span>
+            <span class="item-loc-badge">🗄️ Pantry</span>
+            <span class="item-expiry none">— No date</span>
+          </div>
+        </div>
+        <div class="item-right">
+          <div class="qty-row">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">5</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="item-row">
+        <span class="item-emoji">🍋</span>
+        <div class="item-info">
+          <div class="item-name">Lemons</div>
+          <div class="item-sub">
+            <span>Fresh</span>
+            <span class="item-loc-badge">❄️ Fridge</span>
+            <span class="item-expiry fresh">✓ 14 days</span>
+          </div>
+        </div>
+        <div class="item-right">
+          <div class="qty-row">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">4</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── GRAINS SECTION ── -->
+  <div class="cat-section">
+    <div class="cat-section-header">
+      <div class="cat-color-chip" style="background:var(--cat-grains-text);opacity:0.8;"></div>
+      <h2>🍞 Grains & Bakery</h2>
+      <span class="section-count">9 items</span>
+      <span class="collapse-arrow">▲</span>
+    </div>
+    <div class="item-list">
+      <div class="item-row">
+        <span class="item-emoji">🍞</span>
+        <div class="item-info">
+          <div class="item-name">Whole Wheat Sourdough</div>
+          <div class="item-sub">
+            <span>Dave's Killer Bread</span>
+            <span class="item-loc-badge">🗄️ Pantry</span>
+            <span class="item-expiry fresh">✓ 8 days</span>
+          </div>
+        </div>
+        <div class="item-right">
+          <div class="qty-row">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">1</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="item-row">
+        <span class="item-emoji">🍝</span>
+        <div class="item-info">
+          <div class="item-name">Penne Rigate</div>
+          <div class="item-sub">
+            <span>Barilla</span>
+            <span class="item-loc-badge">🗄️ Pantry</span>
+            <span class="item-expiry none">— No date</span>
+          </div>
+        </div>
+        <div class="item-right">
+          <div class="qty-row">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">4</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SNACKS SECTION ── -->
+  <div class="cat-section">
+    <div class="cat-section-header">
+      <div class="cat-color-chip" style="background:var(--cat-snacks-text);opacity:0.8;"></div>
+      <h2>🍿 Snacks</h2>
+      <span class="section-count">7 items</span>
+      <span class="collapse-arrow">▲</span>
+    </div>
+    <div class="item-list">
+      <div class="item-row out-of-stock">
+        <span class="item-emoji">🥣</span>
+        <div class="item-info">
+          <div class="item-name">Honey Oat Granola <span style="font-size:11px;color:var(--text-muted);font-weight:400;">— Out of stock</span></div>
+          <div class="item-sub">
+            <span>Nature Valley</span>
+            <span class="item-loc-badge">🗄️ Pantry</span>
+          </div>
+        </div>
+        <div class="item-right">
+          <div class="qty-row">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">0</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="item-row">
+        <span class="item-emoji">🍫</span>
+        <div class="item-info">
+          <div class="item-name">Dark Chocolate 85%</div>
+          <div class="item-sub">
+            <span>Lindt Excellence</span>
+            <span class="item-loc-badge">🗄️ Pantry</span>
+            <span class="item-expiry none">— No date</span>
+          </div>
+        </div>
+        <div class="item-right">
+          <div class="qty-row">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">2</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BEVERAGES ── -->
+  <div class="cat-section">
+    <div class="cat-section-header">
+      <div class="cat-color-chip" style="background:var(--cat-beverages-text);opacity:0.8;"></div>
+      <h2>🥤 Beverages</h2>
+      <span class="section-count">5 items</span>
+      <span class="collapse-arrow">▲</span>
+    </div>
+    <div class="item-list">
+      <div class="item-row">
+        <span class="item-emoji">💧</span>
+        <div class="item-info">
+          <div class="item-name">Sparkling Water Lemon</div>
+          <div class="item-sub">
+            <span>LaCroix</span>
+            <span class="item-loc-badge">❄️ Fridge</span>
+            <span class="item-expiry none">— No date</span>
+          </div>
+        </div>
+        <div class="item-right">
+          <div class="qty-row">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">12</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="item-row">
+        <span class="item-emoji">☕</span>
+        <div class="item-info">
+          <div class="item-name">Medium Roast Coffee</div>
+          <div class="item-sub">
+            <span>Peet's Coffee</span>
+            <span class="item-loc-badge">🗄️ Pantry</span>
+            <span class="item-expiry fresh">✓ 60 days</span>
+          </div>
+        </div>
+        <div class="item-right">
+          <div class="qty-row">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">1</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FROZEN ── -->
+  <div class="cat-section">
+    <div class="cat-section-header">
+      <div class="cat-color-chip" style="background:var(--cat-frozen-text);opacity:0.8;"></div>
+      <h2>🧊 Frozen</h2>
+      <span class="section-count">4 items</span>
+      <span class="collapse-arrow">▲</span>
+    </div>
+    <div class="item-list">
+      <div class="item-row">
+        <span class="item-emoji">🫛</span>
+        <div class="item-info">
+          <div class="item-name">Shelled Edamame</div>
+          <div class="item-sub">
+            <span>Cascadian Farm · Organic</span>
+            <span class="item-loc-badge">🧊 Freezer</span>
+            <span class="item-expiry fresh">✓ 180 days</span>
+          </div>
+        </div>
+        <div class="item-right">
+          <div class="qty-row">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">2</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="item-row">
+        <span class="item-emoji">🍗</span>
+        <div class="item-info">
+          <div class="item-name">Boneless Chicken Thighs</div>
+          <div class="item-sub">
+            <span>Bell & Evans</span>
+            <span class="item-loc-badge">🧊 Freezer</span>
+            <span class="item-expiry fresh">✓ 45 days</span>
+          </div>
+        </div>
+        <div class="item-right">
+          <div class="qty-row">
+            <button class="qty-btn">−</button>
+            <span class="qty-val">2</span>
+            <button class="qty-btn">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+</body>
+</html>

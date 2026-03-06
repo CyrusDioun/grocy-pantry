@@ -8,6 +8,7 @@ Uses inotify — only wakes when a file appears. Zero CPU otherwise.
 import json, os, sys, time, glob, subprocess, requests, re
 from datetime import datetime
 from pathlib import Path
+from category_mapper import map_category
 
 SCAN_DIR = os.path.expanduser("~/Dropbox/Grocy-Scan")
 PROCESSED_DIR = os.path.join(SCAN_DIR, "processed")
@@ -217,26 +218,48 @@ def process_image(image_path):
     inv = load_inventory()
     existing = [p for p in inv["products"] if p["barcode"] == barcode]
     if existing:
-        existing[0]["quantity_count"] = existing[0].get("quantity_count", 1) + 1
-        existing[0]["last_scanned"] = datetime.now().isoformat()
+        p = existing[0]
+        p["quantity_count"] = p.get("quantity_count", 1) + 1
+        p["last_scanned"] = datetime.now().isoformat()
+        # Update auto-category if not manually overridden
+        if p.get("category_source") != "manual":
+            new_cat = map_category(p.get("categories", ""))
+            p["user_category"] = new_cat
+            p["category_source"] = "auto"
         save_inventory(inv)
-        log(f"  Already in inventory: {existing[0]['name']} (qty: {existing[0]['quantity_count']})")
+        log(f"  Already in inventory: {p['name']} (qty: {p['quantity_count']}, category: {p.get('user_category', 'none')})")
         os.rename(image_path, os.path.join(PROCESSED_DIR, filename))
-        return existing[0]
+        return p
     
     product = lookup_product(barcode)
     if product:
-        product.update({"quantity_count": 1, "added": datetime.now().isoformat(),
-                        "last_scanned": datetime.now().isoformat(),
-                        "expiration_date": None, "location": "pantry"})
+        # Auto-assign category from OFF data
+        cat = map_category(product.get("categories", ""))
+        product.update({
+            "quantity_count": 1,
+            "added": datetime.now().isoformat(),
+            "last_scanned": datetime.now().isoformat(),
+            "expiration_date": None,
+            "location": "pantry",
+            "user_category": cat,
+            "category_source": "auto",
+        })
         inv["products"].append(product)
         save_inventory(inv)
-        log(f"  Added: {product['name']} ({product['brand']})")
+        log(f"  Added: {product['name']} ({product['brand']}) → {cat}")
     else:
-        product = {"barcode": barcode, "name": f"Unknown ({barcode})", "brand": "Unknown",
-                    "quantity_count": 1, "added": datetime.now().isoformat(),
-                    "last_scanned": datetime.now().isoformat(),
-                    "expiration_date": None, "location": "pantry"}
+        product = {
+            "barcode": barcode,
+            "name": f"Unknown ({barcode})",
+            "brand": "Unknown",
+            "quantity_count": 1,
+            "added": datetime.now().isoformat(),
+            "last_scanned": datetime.now().isoformat(),
+            "expiration_date": None,
+            "location": "pantry",
+            "user_category": "Other",
+            "category_source": "auto",
+        }
         inv["products"].append(product)
         save_inventory(inv)
         log(f"  Added unknown: {barcode}")
@@ -258,7 +281,11 @@ def resolve_unknowns():
                 p.update({k: v for k, v in product.items() if v})
                 p["name"] = product["name"]
                 p["brand"] = product.get("brand", p.get("brand", "Unknown"))
-                log(f"  Resolved: {old_name} → {product['name']} ({product.get('brand', '?')})")
+                # Update category if not manually set
+                if p.get("category_source") != "manual":
+                    p["user_category"] = map_category(product.get("categories", ""))
+                    p["category_source"] = "auto"
+                log(f"  Resolved: {old_name} → {product['name']} ({product.get('brand', '?')}) → {p['user_category']}")
                 resolved += 1
             else:
                 log(f"  Still unknown: {barcode}")

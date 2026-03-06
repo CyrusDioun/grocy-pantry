@@ -542,10 +542,110 @@
   /* ── Empty state ── */
   .empty-state {
     text-align: center;
-    padding: 48px 24px;
+    padding: 64px 24px 48px;
     color: var(--muted);
+    max-width: 320px;
+    margin: 0 auto;
   }
-  .empty-state .emoji { font-size: 48px; display: block; margin-bottom: 12px; }
+  .empty-state .emoji { font-size: 56px; display: block; margin-bottom: 16px; line-height: 1; }
+  .empty-state h3 { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .empty-state p { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; }
+  .empty-state .empty-cta {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--primary); color: #fff;
+    border: none; border-radius: 20px; padding: 10px 20px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .empty-state .empty-cta:hover { background: var(--primary-600); }
+
+  /* ── Error state ── */
+  .error-state {
+    text-align: center;
+    padding: 64px 24px 48px;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+  .error-state .emoji { font-size: 56px; display: block; margin-bottom: 16px; line-height: 1; }
+  .error-state h3 { font-size: 18px; font-weight: 600; color: #B71C1C; margin-bottom: 8px; }
+  .error-state p { font-size: 14px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 20px; }
+  .error-state .retry-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #C75050; color: #fff;
+    border: none; border-radius: 20px; padding: 10px 20px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .error-state .retry-btn:hover { background: #B71C1C; }
+
+  /* ── Skeleton loading ── */
+  @keyframes shimmer {
+    0% { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
+  }
+  .skeleton-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .skeleton-block {
+    background: linear-gradient(90deg, #f0ede8 25%, #e8e3db 50%, #f0ede8 75%);
+    background-size: 800px 100%;
+    animation: shimmer 1.5s infinite linear;
+    border-radius: 6px;
+  }
+  .skeleton-emoji { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; }
+  .skeleton-lines { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .skeleton-line-name { height: 16px; width: 65%; }
+  .skeleton-line-brand { height: 12px; width: 40%; }
+  .skeleton-line-badge { height: 20px; width: 80px; border-radius: 10px; }
+
+  /* ── Out of stock badge ── */
+  .oos-badge {
+    display: inline-flex; align-items: center;
+    background: var(--done-bg); color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 2px 8px;
+    font-size: 11px; font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* ── Stat filter (clickable stats bar) ── */
+  .stat { cursor: pointer; padding: 4px 8px; border-radius: 12px; transition: background 0.15s; }
+  .stat:hover { background: rgba(0,0,0,0.06); }
+  .stat.active-filter { background: rgba(0,0,0,0.1); outline: 2px solid var(--border); }
+
+  /* ── Sort direction arrow ── */
+  .sort-btn .sort-arrow { font-size: 10px; opacity: 0.7; margin-left: 2px; }
+  .sidebar-sort-btn .sort-arrow { font-size: 10px; opacity: 0.7; margin-left: 2px; }
+
+  /* ── Location dropdown (like cat-dropdown) ── */
+  .loc-badge-wrap { position: relative; display: inline-block; }
+  .loc-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    z-index: 200;
+    min-width: 140px;
+    overflow: hidden;
+  }
+  .loc-dropdown.open { display: block; }
+  .loc-dropdown-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    font-size: 13px; cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.1s;
+  }
+  .loc-dropdown-item:hover { background: var(--primary-50); }
+  .loc-dropdown-item.selected { font-weight: 700; color: var(--primary); background: var(--primary-50); }
 
   /* ── Toast ── */
   .toast {
@@ -696,7 +796,7 @@
 
     .content {
       padding: 16px 24px 80px;
-      max-width: none;
+      max-width: 1400px;
       margin: 0;
     }
 
@@ -993,7 +1093,7 @@
   <div class="sidebar-section">
     <div class="sidebar-section-title">Sort By</div>
     <div class="sidebar-sort-row" id="sidebarSortRow">
-      <button class="sidebar-sort-btn active" data-sort="name" onclick="setSortSidebar('name',this)"><span class="sidebar-sort-icon">🔤</span> Name</button>
+      <button class="sidebar-sort-btn active" data-sort="name" onclick="setSortSidebar('name',this)"><span class="sidebar-sort-icon">🔤</span> Name<span class="sort-arrow">▲</span></button>
       <button class="sidebar-sort-btn" data-sort="expiry" onclick="setSortSidebar('expiry',this)"><span class="sidebar-sort-icon">📅</span> Expiry</button>
       <button class="sidebar-sort-btn" data-sort="recent" onclick="setSortSidebar('recent',this)"><span class="sidebar-sort-icon">🕐</span> Recent</button>
       <button class="sidebar-sort-btn" data-sort="qty" onclick="setSortSidebar('qty',this)"><span class="sidebar-sort-icon">📦</span> Quantity</button>
@@ -1023,10 +1123,10 @@
     </div>
   </div>
   <div class="stats-bar" id="statsBar">
-    <span class="stat"><span class="stat-dot dot-green"></span><span id="statTotal">—</span> items</span>
-    <span class="stat"><span class="stat-dot dot-amber"></span><span id="statExpiring">—</span> expiring</span>
-    <span class="stat"><span class="stat-dot dot-red"></span><span id="statExpired">—</span> expired</span>
-    <span class="stat"><span class="stat-dot dot-gray"></span><span id="statNoDate">—</span> no date</span>
+    <span class="stat" id="statFilterAll" onclick="setStatFilter('all')" title="Show all items"><span class="stat-dot dot-green"></span><span id="statTotal">—</span> items</span>
+    <span class="stat" id="statFilterExpiring" onclick="setStatFilter('expiring')" title="Show expiring items"><span class="stat-dot dot-amber"></span><span id="statExpiring">—</span> expiring</span>
+    <span class="stat" id="statFilterExpired" onclick="setStatFilter('expired')" title="Show expired items"><span class="stat-dot dot-red"></span><span id="statExpired">—</span> expired</span>
+    <span class="stat" id="statFilterNoDate" onclick="setStatFilter('nodate')" title="Show items with no date"><span class="stat-dot dot-gray"></span><span id="statNoDate">—</span> no date</span>
   </div>
   <div class="search-wrap">
     <span class="search-icon">🔍</span>
@@ -1034,10 +1134,10 @@
   </div>
   <div class="sort-row">
     <span class="sort-label">Sort:</span>
-    <button class="sort-btn active" onclick="setSort('name',this)">Name</button>
-    <button class="sort-btn" onclick="setSort('expiry',this)">Expiry</button>
-    <button class="sort-btn" onclick="setSort('recent',this)">Recent</button>
-    <button class="sort-btn" onclick="setSort('qty',this)">Quantity</button>
+    <button class="sort-btn active" data-sort="name" onclick="setSort('name',this)">Name<span class="sort-arrow">▲</span></button>
+    <button class="sort-btn" data-sort="expiry" onclick="setSort('expiry',this)">Expiry</button>
+    <button class="sort-btn" data-sort="recent" onclick="setSort('recent',this)">Recent</button>
+    <button class="sort-btn" data-sort="qty" onclick="setSort('qty',this)">Quantity</button>
   </div>
 </div>
 
@@ -1121,6 +1221,12 @@ let currentSort = 'name';
 let expandedCards = new Set();
 let saving = false;
 let refreshTimer = null;
+let isLoading = false;
+let loadError = null;
+let activeStatFilter = null; // 'expiring' | 'expired' | 'nodate' | null
+let openLocationDropdownBarcode = null;
+// Sort direction: default sane values per sort type
+const sortDirection = { name: 'asc', expiry: 'asc', recent: 'desc', qty: 'desc' };
 
 const CATEGORIES = [
   { id: 'Dairy',              emoji: '🥛', color: 'var(--cat-dairy)',      textColor: 'var(--cat-dairy-text)',       barColor: '#1A56DB' },
@@ -1223,6 +1329,18 @@ function filteredProducts() {
       const hay = `${p.name} ${p.brand} ${p.location} ${p.barcode} ${p.user_category||''}`.toLowerCase();
       if (!hay.includes(q)) return false;
     }
+    // Stat filter
+    if (activeStatFilter) {
+      if (activeStatFilter === 'expiring') {
+        if (!p.expiration_date) return false;
+        return expiryInfo(p.expiration_date).cls === 'expiring';
+      }
+      if (activeStatFilter === 'expired') {
+        if (!p.expiration_date) return false;
+        return expiryInfo(p.expiration_date).cls === 'expired';
+      }
+      if (activeStatFilter === 'nodate') return !p.expiration_date;
+    }
     return true;
   });
   ps = sortProducts(ps);
@@ -1239,16 +1357,18 @@ function locationFilteredProducts() {
 
 function sortProducts(ps) {
   const s = currentSort;
+  const dir = sortDirection[s] || 'asc';
+  const mul = dir === 'asc' ? 1 : -1;
   return [...ps].sort((a,b) => {
-    if (s === 'name') return (a.name||'').localeCompare(b.name||'');
+    if (s === 'name') return mul * (a.name||'').localeCompare(b.name||'');
     if (s === 'expiry') {
       if (!a.expiration_date && !b.expiration_date) return 0;
-      if (!a.expiration_date) return 1;
+      if (!a.expiration_date) return 1; // no date always last
       if (!b.expiration_date) return -1;
-      return a.expiration_date.localeCompare(b.expiration_date);
+      return mul * a.expiration_date.localeCompare(b.expiration_date);
     }
-    if (s === 'recent') return (b.last_scanned||'').localeCompare(a.last_scanned||'');
-    if (s === 'qty') return (b.quantity_count||0) - (a.quantity_count||0);
+    if (s === 'recent') return mul * (a.last_scanned||'').localeCompare(b.last_scanned||'');
+    if (s === 'qty') return mul * ((a.quantity_count||0) - (b.quantity_count||0));
     return 0;
   });
 }
@@ -1330,10 +1450,8 @@ function renderSidebar() {
     catList.innerHTML = html;
   }
 
-  // Sync sidebar sort buttons
-  document.querySelectorAll('.sidebar-sort-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.sort === currentSort);
-  });
+  // Sync sidebar sort buttons with direction arrows
+  syncSidebarSortArrows();
 }
 
 function setTabFromSidebar(id) {
@@ -1354,11 +1472,20 @@ function setCategoryFromSidebar(cat) {
 }
 
 function setSortSidebar(s, btn) {
-  currentSort = s;
+  if (currentSort === s) {
+    sortDirection[s] = sortDirection[s] === 'asc' ? 'desc' : 'asc';
+  } else {
+    currentSort = s;
+  }
   // Sync header sort buttons
-  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-  const headerBtn = document.querySelector(`.sort-btn[onclick="setSort('${s}',this)"]`);
-  if (headerBtn) headerBtn.classList.add('active');
+  document.querySelectorAll('.sort-btn').forEach(b => {
+    const isActive = b.dataset.sort === currentSort;
+    b.classList.toggle('active', isActive);
+    let arrow = b.querySelector('.sort-arrow');
+    if (!arrow) { arrow = document.createElement('span'); arrow.className = 'sort-arrow'; b.appendChild(arrow); }
+    arrow.textContent = isActive ? (sortDirection[currentSort] === 'asc' ? '▲' : '▼') : '';
+  });
+  syncSidebarSortArrows();
   render();
 }
 
@@ -1406,6 +1533,16 @@ function setCategory(cat) {
   render();
 }
 
+function setStatFilter(filter) {
+  // 'all' clears the filter; clicking same filter again also clears
+  if (filter === 'all' || activeStatFilter === filter) {
+    activeStatFilter = null;
+  } else {
+    activeStatFilter = filter;
+  }
+  render();
+}
+
 function escAttr(s) { return s.replace(/"/g, '&quot;'); }
 
 function renderStats() {
@@ -1414,6 +1551,16 @@ function renderStats() {
   document.getElementById('statExpiring').textContent = expiring;
   document.getElementById('statExpired').textContent = expired;
   document.getElementById('statNoDate').textContent = noDate;
+  // Highlight active stat filter
+  ['statFilterAll','statFilterExpiring','statFilterExpired','statFilterNoDate'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active-filter');
+  });
+  const filterMap = { expiring: 'statFilterExpiring', expired: 'statFilterExpired', nodate: 'statFilterNoDate' };
+  if (activeStatFilter && filterMap[activeStatFilter]) {
+    const el = document.getElementById(filterMap[activeStatFilter]);
+    if (el) el.classList.add('active-filter');
+  }
 }
 
 function renderTabs() {
@@ -1427,12 +1574,53 @@ function renderTabs() {
   }).join('');
 }
 
+function renderSkeletonCards(n) {
+  return Array.from({length: n}, () => `
+    <div class="skeleton-card">
+      <div class="skeleton-block skeleton-emoji"></div>
+      <div class="skeleton-lines">
+        <div class="skeleton-block skeleton-line-name"></div>
+        <div class="skeleton-block skeleton-line-brand"></div>
+        <div class="skeleton-block skeleton-line-badge"></div>
+      </div>
+    </div>`).join('');
+}
+
 function renderContent() {
-  const ps = filteredProducts();
   const content = document.getElementById('content');
 
+  // Loading state: show skeleton cards
+  if (isLoading) {
+    content.innerHTML = `<div class="products-grid">${renderSkeletonCards(6)}</div>`;
+    return;
+  }
+
+  // Error state
+  if (loadError) {
+    content.innerHTML = `<div class="error-state">
+      <span class="emoji">⚠️</span>
+      <h3>Couldn't load your pantry</h3>
+      <p>Check that the server is running, or try again.</p>
+      <button class="retry-btn" onclick="loadPantry()">🔄 Retry</button>
+    </div>`;
+    return;
+  }
+
+  // True empty (no products at all)
+  if (products.length === 0) {
+    content.innerHTML = `<div class="empty-state">
+      <span class="emoji">🛒</span>
+      <h3>Your pantry is empty</h3>
+      <p>Scan a barcode or tap + to add your first item</p>
+      <button class="empty-cta" onclick="openAddModal()">+ Add Item</button>
+    </div>`;
+    return;
+  }
+
+  const ps = filteredProducts();
+
   if (ps.length === 0) {
-    content.innerHTML = `<div class="empty-state"><span class="emoji">🥫</span><div>No items found</div></div>`;
+    content.innerHTML = `<div class="empty-state"><span class="emoji">🔍</span><h3>No items found</h3><p>Try adjusting your filters or search</p></div>`;
     return;
   }
 
@@ -1497,6 +1685,51 @@ function catBadgeHTML(p) {
   </span>`;
 }
 
+const LOCATIONS = [
+  { id: 'pantry', label: 'Pantry', emoji: '🥫' },
+  { id: 'fridge', label: 'Fridge', emoji: '❄️' },
+  { id: 'freezer', label: 'Freezer', emoji: '🧊' },
+  { id: 'spice rack', label: 'Spice Rack', emoji: '🌿' },
+];
+
+function locBadgeHTML(p) {
+  const locId = (p.location || 'pantry').toLowerCase();
+  const locInfo = LOCATIONS.find(l => l.id === locId) || { id: locId, label: capitalize(locId), emoji: '📦' };
+  const isOpen = openLocationDropdownBarcode === p.barcode;
+  const dropdownItems = LOCATIONS.map(l =>
+    `<div class="loc-dropdown-item${l.id === locId ? ' selected' : ''}" onclick="selectLocation('${p.barcode}','${l.id}',event)">
+      ${l.emoji} ${l.label}
+    </div>`
+  ).join('');
+  return `<span class="loc-badge-wrap" onclick="toggleLocDropdown('${p.barcode}',event)">
+    <span class="loc-badge" style="cursor:pointer" title="Change location">${locInfo.emoji} ${locInfo.label}</span>
+    <div class="loc-dropdown${isOpen ? ' open' : ''}">
+      ${dropdownItems}
+    </div>
+  </span>`;
+}
+
+function toggleLocDropdown(barcode, event) {
+  event.stopPropagation();
+  if (openLocationDropdownBarcode === barcode) {
+    openLocationDropdownBarcode = null;
+  } else {
+    openLocationDropdownBarcode = barcode;
+  }
+  render();
+}
+
+async function selectLocation(barcode, locId, event) {
+  event.stopPropagation();
+  const p = products.find(p => p.barcode === barcode);
+  if (!p) return;
+  p.location = locId;
+  openLocationDropdownBarcode = null;
+  render();
+  await patch(barcode, { location: locId });
+  toast(`Moved to ${capitalize(locId)}`);
+}
+
 function toggleCatDropdown(barcode, event) {
   event.stopPropagation();
   if (openDropdownBarcode === barcode) {
@@ -1528,22 +1761,28 @@ function cardHTML(p, isUrgent) {
   else if (info.cls === 'expiring' && !isUrgent) cls += ' expiring-card';
   else if (info.cls === 'expired') cls += ' expired-card';
 
-  const hasNutrition = p.nutrition && Object.keys(p.nutrition).length > 0;
-  const hasIngredients = p.ingredients;
+  // Nutrition: only show non-null fields; hide entire section if all null
+  const n = p.nutrition || {};
+  const nutritionFields = [
+    { key: 'calories_per_100g', label: 'cal', fmt: v => Math.round(v) },
+    { key: 'protein_per_100g', label: 'protein', fmt: v => v.toFixed(1)+'g' },
+    { key: 'fat_per_100g', label: 'fat', fmt: v => v.toFixed(1)+'g' },
+    { key: 'carbs_per_100g', label: 'carbs', fmt: v => v.toFixed(1)+'g' },
+    { key: 'sugar_per_100g', label: 'sugar', fmt: v => v.toFixed(1)+'g' },
+    { key: 'sodium_per_100g', label: 'sodium', fmt: v => (v*1000).toFixed(0)+'mg' },
+  ];
+  const validNutrition = nutritionFields.filter(f => n[f.key] != null);
+  const hasNutrition = validNutrition.length > 0;
+  const hasIngredients = !!(p.ingredients && p.ingredients.trim());
 
   let detailHTML = '';
   if (hasNutrition) {
-    const n = p.nutrition;
+    const nutItems = validNutrition.map(f =>
+      `<div class="nutrition-item"><div class="val">${f.fmt(n[f.key])}</div><div class="lbl">${f.label}</div></div>`
+    ).join('');
     detailHTML += `<div class="detail-section">
       <div class="detail-label">Nutrition (per 100g)</div>
-      <div class="nutrition-grid">
-        ${n.calories_per_100g != null ? `<div class="nutrition-item"><div class="val">${Math.round(n.calories_per_100g)}</div><div class="lbl">cal</div></div>` : ''}
-        ${n.protein_per_100g != null ? `<div class="nutrition-item"><div class="val">${n.protein_per_100g.toFixed(1)}g</div><div class="lbl">protein</div></div>` : ''}
-        ${n.fat_per_100g != null ? `<div class="nutrition-item"><div class="val">${n.fat_per_100g.toFixed(1)}g</div><div class="lbl">fat</div></div>` : ''}
-        ${n.carbs_per_100g != null ? `<div class="nutrition-item"><div class="val">${n.carbs_per_100g.toFixed(1)}g</div><div class="lbl">carbs</div></div>` : ''}
-        ${n.sugar_per_100g != null ? `<div class="nutrition-item"><div class="val">${n.sugar_per_100g.toFixed(1)}g</div><div class="lbl">sugar</div></div>` : ''}
-        ${n.sodium_per_100g != null ? `<div class="nutrition-item"><div class="val">${(n.sodium_per_100g*1000).toFixed(0)}mg</div><div class="lbl">sodium</div></div>` : ''}
-      </div>
+      <div class="nutrition-grid">${nutItems}</div>
     </div>`;
   }
   if (hasIngredients) {
@@ -1551,6 +1790,9 @@ function cardHTML(p, isUrgent) {
       <div class="detail-label">Ingredients</div>
       <div class="ingredients-text">${p.ingredients}</div>
     </div>`;
+  }
+  if (!hasNutrition && !hasIngredients) {
+    detailHTML += `<div class="detail-section" style="color:var(--text-muted);font-style:italic;font-size:13px">No product details available</div>`;
   }
   if (p.serving_size) {
     detailHTML += `<div class="detail-section"><span class="detail-label">Serving:</span> ${p.serving_size}</div>`;
@@ -1560,7 +1802,7 @@ function cardHTML(p, isUrgent) {
   }
   detailHTML += `<div class="detail-actions">
     <button class="detail-btn danger" onclick="deleteProduct('${p.barcode}',event)">🗑 Delete</button>
-    <button class="detail-btn" onclick="editLocation('${p.barcode}',event)">📍 Location</button>
+    <button class="detail-btn" onclick="toggleLocDropdown('${p.barcode}',event)">📍 Location</button>
   </div>`;
 
   return `<div class="${cls}" id="card-${p.barcode}">
@@ -1571,14 +1813,15 @@ function cardHTML(p, isUrgent) {
         ${p.brand ? `<div class="card-brand">${p.brand}</div>` : ''}
         <div class="card-sub">
           ${catBadgeHTML(p)}
-          ${p.location ? `<span class="loc-badge">${p.location}</span>` : ''}
+          ${locBadgeHTML(p)}
+          ${isDone ? `<span class="oos-badge">Out of stock</span>` : ''}
         </div>
       </div>
       <div class="card-controls" onclick="event.stopPropagation()">
         <button class="qty-btn" onclick="changeQty('${p.barcode}',-1)">−</button>
         <span class="qty-display">${p.quantity_count || 0}</span>
         <button class="qty-btn" onclick="changeQty('${p.barcode}',1)">+</button>
-        <div class="done-check${isDone?' checked':''}" onclick="toggleDone('${p.barcode}')" title="${isDone?'Mark in stock':'Mark done'}">
+        <div class="done-check${isDone?' checked':''}" onclick="toggleDone('${p.barcode}')" title="${isDone?'Mark in stock':'Mark out of stock'}">
           ${isDone?'✓':''}
         </div>
       </div>
@@ -1632,15 +1875,9 @@ async function changeQty(barcode, delta) {
 }
 
 function updateCardQty(barcode, qty) {
-  const card = document.getElementById('card-' + barcode);
-  if (!card) return;
-  const display = card.querySelector('.qty-display');
-  if (display) display.textContent = qty;
-  const check = card.querySelector('.done-check');
-  if (check) {
-    if (qty <= 0) { check.classList.add('checked'); check.textContent = '✓'; card.classList.add('done-card'); }
-    else { check.classList.remove('checked'); check.textContent = ''; card.classList.remove('done-card'); }
-  }
+  // Re-render the full card for out-of-stock badge accuracy
+  const p = products.find(p => p.barcode === barcode);
+  if (p) render();
 }
 
 async function toggleDone(barcode) {
@@ -1663,18 +1900,7 @@ async function deleteProduct(barcode, event) {
   } catch(e) { toast('Error removing item'); loadPantry(); }
 }
 
-async function editLocation(barcode, event) {
-  event.stopPropagation();
-  const p = products.find(p => p.barcode === barcode);
-  if (!p) return;
-  const locs = ['pantry', 'fridge', 'freezer', 'spice rack'];
-  const cur = (p.location || 'pantry').toLowerCase();
-  const next = locs[(locs.indexOf(cur) + 1) % locs.length];
-  p.location = next;
-  await patch(barcode, { location: next });
-  render();
-  toast(`Moved to ${next}`);
-}
+// editLocation() replaced by locBadgeHTML dropdown (Phase 4)
 
 async function patch(barcode, fields) {
   try {
@@ -1694,12 +1920,35 @@ function setTab(id) {
 }
 
 function setSort(s, btn) {
-  currentSort = s;
-  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  if (currentSort === s) {
+    // Toggle direction
+    sortDirection[s] = sortDirection[s] === 'asc' ? 'desc' : 'asc';
+  } else {
+    currentSort = s;
+  }
+  // Update arrows on header sort buttons
+  document.querySelectorAll('.sort-btn').forEach(b => {
+    b.classList.remove('active');
+    const arrow = b.querySelector('.sort-arrow');
+    if (arrow) arrow.textContent = '';
+  });
   btn.classList.add('active');
+  let arrow = btn.querySelector('.sort-arrow');
+  if (!arrow) { arrow = document.createElement('span'); arrow.className = 'sort-arrow'; btn.appendChild(arrow); }
+  arrow.textContent = sortDirection[s] === 'asc' ? '▲' : '▼';
   // Sync sidebar
-  document.querySelectorAll('.sidebar-sort-btn').forEach(b => b.classList.toggle('active', b.dataset.sort === s));
+  syncSidebarSortArrows();
   render();
+}
+
+function syncSidebarSortArrows() {
+  document.querySelectorAll('.sidebar-sort-btn').forEach(b => {
+    const isActive = b.dataset.sort === currentSort;
+    b.classList.toggle('active', isActive);
+    let arrow = b.querySelector('.sort-arrow');
+    if (!arrow) { arrow = document.createElement('span'); arrow.className = 'sort-arrow'; b.appendChild(arrow); }
+    arrow.textContent = isActive ? (sortDirection[currentSort] === 'asc' ? '▲' : '▼') : '';
+  });
 }
 
 function openAddModal() {
@@ -1755,14 +2004,21 @@ function toast(msg) {
 }
 
 async function loadPantry() {
+  isLoading = true;
+  loadError = null;
+  renderContent(); // show skeleton immediately
   try {
     const res = await fetch(`${API}/api/pantry`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     products = data.products || [];
+    isLoading = false;
     render();
   } catch(e) {
     console.error('Failed to load pantry', e);
-    toast('Failed to load pantry data');
+    isLoading = false;
+    loadError = e.message || 'Network error';
+    renderContent(); // show error state
   }
 }
 
@@ -1780,10 +2036,10 @@ loadPantry().then(scheduleRefresh);
 
 // Close dropdowns when clicking outside
 document.addEventListener('click', () => {
-  if (openDropdownBarcode !== null) {
-    openDropdownBarcode = null;
-    render();
-  }
+  let changed = false;
+  if (openDropdownBarcode !== null) { openDropdownBarcode = null; changed = true; }
+  if (openLocationDropdownBarcode !== null) { openLocationDropdownBarcode = null; changed = true; }
+  if (changed) render();
 });
 
 // Handle keyboard shortcut for add

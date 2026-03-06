@@ -13,13 +13,20 @@
     --primary-light: #7BAD7A;
     --primary-50: #EDF7ED;
     --primary-100: #C3E6C4;
+    --primary-500: #5B8C5A;
+    --primary-600: #4A7A49;
+    --primary-700: #3A6839;
     --accent: #D4A574;
     --warning: #E8A838;
     --danger: #C75050;
+    --success: #2E7D32;
+    --info: #5B8C9A;
     --text: #2D3436;
     --text-secondary: #636E72;
+    --text-muted: #95A5A6;
     --muted: #95A5A6;
     --border: #E8E0D0;
+    --border-focus: var(--primary-500);
     --expiring-bg: #FFF8E7;
     --done-bg: #F5F5F5;
     --shadow: 0 1px 4px rgba(0,0,0,0.08);
@@ -58,9 +65,14 @@
     min-height: 100vh;
   }
 
+  /* ── Page layout ── */
+  .page-layout {
+    display: block;
+  }
+
   /* ── Header ── */
   .header {
-    background: var(--card);
+    background: linear-gradient(to bottom, #FFF8F0, var(--bg));
     border-bottom: 1px solid var(--border);
     padding: 14px 16px 10px;
     position: sticky;
@@ -78,7 +90,7 @@
     font-weight: 700;
     color: var(--text);
   }
-  .header-actions { display: flex; gap: 8px; }
+  .header-actions { display: flex; gap: 8px; align-items: center; }
   .icon-btn {
     width: 36px; height: 36px;
     border-radius: 50%;
@@ -95,7 +107,15 @@
     color: white;
   }
 
-  /* ── Stats bar ── */
+  /* Hamburger — only shows on tablet (600-1024px) */
+  .hamburger {
+    display: none;
+  }
+  @media (min-width: 600px) and (max-width: 1024px) {
+    .hamburger { display: flex; }
+  }
+
+  /* ── Stats bar (mobile/tablet) ── */
   .stats-bar {
     display: flex;
     gap: 14px;
@@ -124,7 +144,7 @@
     outline: none;
     transition: border-color 0.15s;
   }
-  .search-input:focus { border-color: var(--primary); }
+  .search-input:focus { border-color: var(--border-focus); }
   .search-icon {
     position: absolute;
     left: 11px; top: 50%;
@@ -133,7 +153,7 @@
     font-size: 16px;
   }
 
-  /* ── Sort row ── */
+  /* ── Sort row (mobile/tablet header) ── */
   .sort-row {
     display: flex;
     gap: 6px;
@@ -159,9 +179,10 @@
     background: var(--primary);
     border-color: var(--primary);
     color: white;
+    font-weight: 700;
   }
 
-  /* ── Category tabs ── */
+  /* ── Location tabs (mobile/tablet) ── */
   .tabs-wrap {
     background: var(--card);
     border-bottom: 1px solid var(--border);
@@ -191,6 +212,61 @@
     font-weight: 600;
   }
 
+  /* ── Category pill bar (mobile/tablet) ── */
+  .cat-bar-wrap {
+    background: var(--sidebar-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .cat-bar-wrap::-webkit-scrollbar { display: none; }
+  .cat-bar {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    min-width: max-content;
+  }
+  .cat-pill {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+  .cat-pill:hover { border-color: var(--primary); color: var(--primary); }
+  .cat-pill.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    font-weight: 700;
+  }
+  .cat-pill[data-cat="Dairy"].active { background: var(--cat-dairy); border-color: var(--cat-dairy-text); color: var(--cat-dairy-text); font-weight: 700; }
+  .cat-pill[data-cat="Produce"].active { background: var(--cat-produce); border-color: var(--cat-produce-text); color: var(--cat-produce-text); font-weight: 700; }
+  .cat-pill[data-cat="Meat & Protein"].active { background: var(--cat-meat); border-color: var(--cat-meat-text); color: var(--cat-meat-text); font-weight: 700; }
+  .cat-pill[data-cat="Grains & Bakery"].active { background: var(--cat-grains); border-color: var(--cat-grains-text); color: var(--cat-grains-text); font-weight: 700; }
+  .cat-pill[data-cat="Snacks"].active { background: var(--cat-snacks); border-color: var(--cat-snacks-text); color: var(--cat-snacks-text); font-weight: 700; }
+  .cat-pill[data-cat="Condiments & Sauces"].active { background: var(--cat-condiments); border-color: var(--cat-condiments-text); color: var(--cat-condiments-text); font-weight: 700; }
+  .cat-pill[data-cat="Frozen"].active { background: var(--cat-frozen); border-color: var(--cat-frozen-text); color: var(--cat-frozen-text); font-weight: 700; }
+  .cat-pill[data-cat="Beverages"].active { background: var(--cat-beverages); border-color: var(--cat-beverages-text); color: var(--cat-beverages-text); font-weight: 700; }
+  .cat-pill[data-cat="Meals & Prepared"].active { background: var(--cat-meals); border-color: var(--cat-meals-text); color: var(--cat-meals-text); font-weight: 700; }
+  .cat-pill[data-cat="Other"].active { background: var(--cat-other); border-color: var(--cat-other-text); color: var(--cat-other-text); font-weight: 700; }
+
+  /* ── Main content area (mobile default) ── */
+  .content-area {
+    display: block;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    display: none; /* hidden on mobile/tablet */
+  }
+
   /* ── Main content ── */
   .content { padding: 12px 12px 80px; max-width: 900px; margin: 0 auto; }
 
@@ -214,11 +290,8 @@
     grid-template-columns: 1fr;
     gap: 8px;
   }
-  @media (min-width: 600px) {
+  @media (min-width: 600px) and (max-width: 1024px) {
     .products-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (min-width: 900px) {
-    .products-grid { grid-template-columns: repeat(3, 1fr); }
   }
 
   .card {
@@ -240,7 +313,7 @@
   .card-main {
     display: flex;
     align-items: center;
-    padding: 12px 14px;
+    padding: 16px;
     gap: 10px;
     cursor: pointer;
   }
@@ -248,18 +321,28 @@
   .card-info { flex: 1; min-width: 0; }
   .card-name {
     font-weight: 600;
-    font-size: 15px;
+    font-size: 16px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .card-sub {
+  .card-brand {
     font-size: 12px;
-    color: var(--muted);
-    margin-top: 2px;
+    color: var(--text-secondary);
+    margin-top: 1px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-weight: 500;
+  }
+  .card-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
   }
   .card-controls {
     display: flex;
@@ -440,7 +523,7 @@
     color: var(--text);
     outline: none;
   }
-  .modal-field input:focus, .modal-field select:focus { border-color: var(--primary); }
+  .modal-field input:focus, .modal-field select:focus { border-color: var(--border-focus); }
   .modal-actions { display: flex; gap: 10px; }
   .btn {
     flex: 1;
@@ -499,54 +582,7 @@
     background: var(--bg);
     border: 1px solid var(--border);
     color: var(--muted);
-    margin-left: 4px;
   }
-
-  /* ── Category pill bar ── */
-  .cat-bar-wrap {
-    background: var(--sidebar-bg);
-    border-bottom: 1px solid var(--border);
-    padding: 8px 12px;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .cat-bar-wrap::-webkit-scrollbar { display: none; }
-  .cat-bar {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    min-width: max-content;
-  }
-  .cat-pill {
-    padding: 5px 12px;
-    border-radius: 20px;
-    border: 1.5px solid transparent;
-    background: var(--card);
-    font-size: 13px;
-    cursor: pointer;
-    white-space: nowrap;
-    color: var(--text-secondary);
-    transition: all 0.15s;
-    font-weight: 500;
-    border-color: var(--border);
-  }
-  .cat-pill:hover { border-color: var(--primary); color: var(--primary); }
-  .cat-pill.active {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: white;
-    font-weight: 600;
-  }
-  .cat-pill[data-cat="Dairy"].active { background: var(--cat-dairy); border-color: var(--cat-dairy-text); color: var(--cat-dairy-text); }
-  .cat-pill[data-cat="Produce"].active { background: var(--cat-produce); border-color: var(--cat-produce-text); color: var(--cat-produce-text); }
-  .cat-pill[data-cat="Meat & Protein"].active { background: var(--cat-meat); border-color: var(--cat-meat-text); color: var(--cat-meat-text); }
-  .cat-pill[data-cat="Grains & Bakery"].active { background: var(--cat-grains); border-color: var(--cat-grains-text); color: var(--cat-grains-text); }
-  .cat-pill[data-cat="Snacks"].active { background: var(--cat-snacks); border-color: var(--cat-snacks-text); color: var(--cat-snacks-text); }
-  .cat-pill[data-cat="Condiments & Sauces"].active { background: var(--cat-condiments); border-color: var(--cat-condiments-text); color: var(--cat-condiments-text); }
-  .cat-pill[data-cat="Frozen"].active { background: var(--cat-frozen); border-color: var(--cat-frozen-text); color: var(--cat-frozen-text); }
-  .cat-pill[data-cat="Beverages"].active { background: var(--cat-beverages); border-color: var(--cat-beverages-text); color: var(--cat-beverages-text); }
-  .cat-pill[data-cat="Meals & Prepared"].active { background: var(--cat-meals); border-color: var(--cat-meals-text); color: var(--cat-meals-text); }
-  .cat-pill[data-cat="Other"].active { background: var(--cat-other); border-color: var(--cat-other-text); color: var(--cat-other-text); }
 
   /* ── Category badge on cards ── */
   .cat-badge {
@@ -607,14 +643,381 @@
     border-radius: 50%;
     flex-shrink: 0;
   }
+
+  /* ══════════════════════════════════════════════════
+     DESKTOP LAYOUT (>1024px)
+  ══════════════════════════════════════════════════ */
+  @media (min-width: 1025px) {
+    /* Hide mobile controls */
+    .tabs-wrap { display: none; }
+    .cat-bar-wrap { display: none; }
+    .stats-bar { display: none; }
+    .sort-row { display: none; }
+    .header h1 { display: none; }
+
+    /* Header becomes minimal search bar */
+    .header {
+      padding: 12px 24px;
+      background: linear-gradient(to bottom, #FFF8F0, var(--bg));
+    }
+    .header-row { margin-bottom: 0; }
+    .search-wrap { margin-bottom: 0; max-width: 600px; }
+
+    /* Page layout: sidebar + content */
+    .page-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        "header header"
+        "sidebar main";
+      min-height: 100vh;
+    }
+
+    .header { grid-area: header; }
+
+    /* Show sidebar */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      grid-area: sidebar;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      height: calc(100vh - 60px);
+      position: sticky;
+      top: 60px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+      padding: 0 0 24px;
+    }
+
+    .main-area { grid-area: main; }
+
+    .content {
+      padding: 16px 24px 80px;
+      max-width: none;
+      margin: 0;
+    }
+
+    /* Wider grid on desktop */
+    .products-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1280px) {
+    .products-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* ── Sidebar components ── */
+
+  /* App title banner */
+  .sidebar-brand {
+    padding: 20px 18px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-brand h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary-700);
+    margin-bottom: 2px;
+  }
+  .sidebar-brand .sidebar-subtitle {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* Sidebar stat cards */
+  .sidebar-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 14px 14px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-stat-card {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 10px 10px 8px;
+    border: 1.5px solid var(--border);
+    text-align: center;
+    cursor: pointer;
+    transition: box-shadow 0.15s, border-color 0.15s;
+  }
+  .sidebar-stat-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .sidebar-stat-card.active-filter { border-color: var(--primary); background: var(--primary-50); }
+  .sidebar-stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+  .sidebar-stat-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 3px;
+  }
+  .stat-card-total .sidebar-stat-value { color: var(--primary-600); }
+  .stat-card-expiring .sidebar-stat-value { color: var(--warning); }
+  .stat-card-expired .sidebar-stat-value { color: var(--danger); }
+  .stat-card-nodate .sidebar-stat-value { color: var(--muted); }
+
+  /* Sidebar section */
+  .sidebar-section {
+    padding: 14px 14px 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+  }
+  .sidebar-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    padding: 0 4px;
+  }
+
+  /* Sidebar location filter */
+  .sidebar-loc-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text);
+    transition: background 0.1s;
+    margin-bottom: 2px;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+  .sidebar-loc-item:hover { background: rgba(0,0,0,0.04); }
+  .sidebar-loc-item.active {
+    background: var(--primary-50);
+    color: var(--primary-600);
+    font-weight: 600;
+  }
+  .sidebar-loc-bar {
+    width: 4px;
+    height: 18px;
+    border-radius: 2px;
+    background: var(--border);
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .sidebar-loc-item.active .sidebar-loc-bar { background: var(--primary); }
+  .sidebar-loc-label { flex: 1; }
+  .sidebar-loc-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+  .sidebar-loc-item.active .sidebar-loc-count { color: var(--primary-600); font-weight: 600; }
+
+  /* Sidebar category filter */
+  .sidebar-cat-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text);
+    transition: background 0.1s;
+    margin-bottom: 2px;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+  .sidebar-cat-item:hover { background: rgba(0,0,0,0.04); }
+  .sidebar-cat-item.active { font-weight: 600; }
+  .sidebar-cat-bar {
+    width: 4px;
+    height: 18px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    opacity: 0.35;
+  }
+  .sidebar-cat-item.active .sidebar-cat-bar { opacity: 1; }
+  .sidebar-cat-label { flex: 1; }
+  .sidebar-cat-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+  .sidebar-cat-item.active .sidebar-cat-count { font-weight: 600; }
+
+  /* Sidebar sort */
+  .sidebar-sort-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .sidebar-sort-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text);
+    transition: background 0.1s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+  .sidebar-sort-btn:hover { background: rgba(0,0,0,0.04); }
+  .sidebar-sort-btn.active {
+    background: var(--primary-50);
+    color: var(--primary-600);
+    font-weight: 600;
+  }
+  .sidebar-sort-icon { font-size: 14px; width: 20px; text-align: center; }
+
+  /* Sidebar add button */
+  .sidebar-add-btn {
+    margin: 14px 14px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px;
+    border-radius: 10px;
+    border: none;
+    background: var(--primary);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+    width: calc(100% - 28px);
+  }
+  .sidebar-add-btn:hover { background: var(--primary-600); }
+
+  /* Desktop header search row */
+  .desktop-header-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .desktop-header-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary-700);
+    white-space: nowrap;
+  }
+
+  /* Sidebar overlay (tablet hamburger) */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 150;
+  }
+  .sidebar-overlay.open { display: block; }
+
+  @media (min-width: 600px) and (max-width: 1024px) {
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 280px;
+      height: 100vh;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      z-index: 160;
+      transition: left 0.25s ease;
+      overflow-y: auto;
+      padding-bottom: 24px;
+    }
+    .sidebar.open { left: 0; }
+  }
 </style>
 </head>
 <body>
 
+<div class="page-layout">
+
+<!-- ── Sidebar (desktop always, tablet via hamburger) ── -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <h2>🥫 Pantry</h2>
+    <div class="sidebar-subtitle" id="sidebarSubtitle">Loading…</div>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="sidebar-stats" id="sidebarStats">
+    <div class="sidebar-stat-card stat-card-total" id="sidebarStatTotal">
+      <div class="sidebar-stat-value" id="sidebarStatTotalVal">—</div>
+      <div class="sidebar-stat-label">Items</div>
+    </div>
+    <div class="sidebar-stat-card stat-card-expiring" id="sidebarStatExpiring">
+      <div class="sidebar-stat-value" id="sidebarStatExpiringVal">—</div>
+      <div class="sidebar-stat-label">Expiring</div>
+    </div>
+    <div class="sidebar-stat-card stat-card-expired" id="sidebarStatExpired">
+      <div class="sidebar-stat-value" id="sidebarStatExpiredVal">—</div>
+      <div class="sidebar-stat-label">Expired</div>
+    </div>
+    <div class="sidebar-stat-card stat-card-nodate" id="sidebarStatNoDate">
+      <div class="sidebar-stat-value" id="sidebarStatNoDatVal">—</div>
+      <div class="sidebar-stat-label">No Date</div>
+    </div>
+  </div>
+
+  <!-- Location filter -->
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Location</div>
+    <div id="sidebarLocList"></div>
+  </div>
+
+  <!-- Category filter -->
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Category</div>
+    <div id="sidebarCatList"></div>
+  </div>
+
+  <!-- Sort -->
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Sort By</div>
+    <div class="sidebar-sort-row" id="sidebarSortRow">
+      <button class="sidebar-sort-btn active" data-sort="name" onclick="setSortSidebar('name',this)"><span class="sidebar-sort-icon">🔤</span> Name</button>
+      <button class="sidebar-sort-btn" data-sort="expiry" onclick="setSortSidebar('expiry',this)"><span class="sidebar-sort-icon">📅</span> Expiry</button>
+      <button class="sidebar-sort-btn" data-sort="recent" onclick="setSortSidebar('recent',this)"><span class="sidebar-sort-icon">🕐</span> Recent</button>
+      <button class="sidebar-sort-btn" data-sort="qty" onclick="setSortSidebar('qty',this)"><span class="sidebar-sort-icon">📦</span> Quantity</button>
+    </div>
+  </div>
+
+  <!-- Add item button -->
+  <button class="sidebar-add-btn" onclick="openAddModal()">+ Add Item</button>
+</div>
+
+<!-- Tablet sidebar overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ── Main area (header + content) ── -->
+<div class="main-area">
+
+<!-- ── Header ── -->
 <div class="header">
   <div class="header-row">
+    <!-- Mobile/tablet title -->
     <h1>🥫 Pantry</h1>
+    <!-- Desktop title (shown via JS class) -->
     <div class="header-actions">
+      <button class="icon-btn hamburger" id="hamburgerBtn" title="Filters" onclick="toggleSidebar()">☰</button>
       <button class="icon-btn" id="refreshBtn" title="Refresh" onclick="loadPantry()">🔄</button>
       <button class="icon-btn primary-btn" title="Add item" onclick="openAddModal()">+</button>
     </div>
@@ -647,6 +1050,10 @@
 </div>
 
 <div class="content" id="content"></div>
+
+</div><!-- end main-area -->
+
+</div><!-- end page-layout -->
 
 <!-- Add product modal -->
 <div class="modal-overlay" id="addModal" onclick="if(event.target===this)closeAddModal()">
@@ -716,16 +1123,16 @@ let saving = false;
 let refreshTimer = null;
 
 const CATEGORIES = [
-  { id: 'Dairy',              emoji: '🥛', color: 'var(--cat-dairy)',      textColor: 'var(--cat-dairy-text)' },
-  { id: 'Produce',            emoji: '🥬', color: 'var(--cat-produce)',    textColor: 'var(--cat-produce-text)' },
-  { id: 'Meat & Protein',     emoji: '🥩', color: 'var(--cat-meat)',       textColor: 'var(--cat-meat-text)' },
-  { id: 'Grains & Bakery',    emoji: '🍞', color: 'var(--cat-grains)',     textColor: 'var(--cat-grains-text)' },
-  { id: 'Snacks',             emoji: '🍿', color: 'var(--cat-snacks)',     textColor: 'var(--cat-snacks-text)' },
-  { id: 'Condiments & Sauces',emoji: '🫙', color: 'var(--cat-condiments)', textColor: 'var(--cat-condiments-text)' },
-  { id: 'Frozen',             emoji: '🧊', color: 'var(--cat-frozen)',     textColor: 'var(--cat-frozen-text)' },
-  { id: 'Beverages',          emoji: '🥤', color: 'var(--cat-beverages)',  textColor: 'var(--cat-beverages-text)' },
-  { id: 'Meals & Prepared',   emoji: '🍲', color: 'var(--cat-meals)',      textColor: 'var(--cat-meals-text)' },
-  { id: 'Other',              emoji: '📦', color: 'var(--cat-other)',      textColor: 'var(--cat-other-text)' },
+  { id: 'Dairy',              emoji: '🥛', color: 'var(--cat-dairy)',      textColor: 'var(--cat-dairy-text)',       barColor: '#1A56DB' },
+  { id: 'Produce',            emoji: '🥬', color: 'var(--cat-produce)',    textColor: 'var(--cat-produce-text)',     barColor: '#2E7D32' },
+  { id: 'Meat & Protein',     emoji: '🥩', color: 'var(--cat-meat)',       textColor: 'var(--cat-meat-text)',        barColor: '#C62828' },
+  { id: 'Grains & Bakery',    emoji: '🍞', color: 'var(--cat-grains)',     textColor: 'var(--cat-grains-text)',      barColor: '#F57F17' },
+  { id: 'Snacks',             emoji: '🍿', color: 'var(--cat-snacks)',     textColor: 'var(--cat-snacks-text)',      barColor: '#6A1B9A' },
+  { id: 'Condiments & Sauces',emoji: '🫙', color: 'var(--cat-condiments)', textColor: 'var(--cat-condiments-text)', barColor: '#E65100' },
+  { id: 'Frozen',             emoji: '🧊', color: 'var(--cat-frozen)',     textColor: 'var(--cat-frozen-text)',      barColor: '#00838F' },
+  { id: 'Beverages',          emoji: '🥤', color: 'var(--cat-beverages)',  textColor: 'var(--cat-beverages-text)',   barColor: '#283593' },
+  { id: 'Meals & Prepared',   emoji: '🍲', color: 'var(--cat-meals)',      textColor: 'var(--cat-meals-text)',       barColor: '#BF360C' },
+  { id: 'Other',              emoji: '📦', color: 'var(--cat-other)',      textColor: 'var(--cat-other-text)',       barColor: '#546E7A' },
 ];
 
 function getCategoryInfo(catId) {
@@ -735,19 +1142,22 @@ function getCategoryInfo(catId) {
 // Active dropdown state
 let openDropdownBarcode = null;
 
-const CATEGORY_MAP = {
+const LOCATION_EMOJI_MAP = {
   fridge: '❄️', freezer: '🧊', pantry: '🥫', 'spice rack': '🌿',
   spices: '🌶️', snacks: '🍿', drinks: '🥤', produce: '🥦',
 };
 
-function categoryEmoji(loc) {
+function locationEmoji(loc) {
   if (!loc) return '📦';
   const l = loc.toLowerCase();
-  for (const [k, v] of Object.entries(CATEGORY_MAP)) {
+  for (const [k, v] of Object.entries(LOCATION_EMOJI_MAP)) {
     if (l.includes(k)) return v;
   }
   return '📦';
 }
+
+// Keep old name for compatibility
+function categoryEmoji(loc) { return locationEmoji(loc); }
 
 function productEmoji(p) {
   const name = (p.name || '').toLowerCase();
@@ -781,7 +1191,7 @@ function productEmoji(p) {
   if (name.includes('flour') || name.includes('sugar') || name.includes('baking')) return '🫙';
   if (name.includes('honey') || name.includes('syrup') || name.includes('jam')) return '🍯';
   if (name.includes('nut') || name.includes('almond') || name.includes('peanut')) return '🥜';
-  return categoryEmoji(p.location);
+  return locationEmoji(p.location);
 }
 
 function expiryInfo(dateStr) {
@@ -795,14 +1205,11 @@ function expiryInfo(dateStr) {
   return { label: exp.toLocaleDateString('en-US', {month:'short', day:'numeric'}), cls: 'fresh', days };
 }
 
-function tabs() {
+function getLocations() {
   const locs = ['all', ...new Set(products.map(p => (p.location || 'pantry').toLowerCase()))].sort((a,b) => a==='all'?-1:b==='all'?1:a.localeCompare(b));
   const counts = {};
   products.forEach(p => { const l = (p.location||'pantry').toLowerCase(); counts[l] = (counts[l]||0)+1; counts['all']=(counts['all']||0)+1; });
-  return locs.map(l => ({
-    id: l,
-    label: l === 'all' ? `All (${counts.all||0})` : `${categoryEmoji(l)} ${capitalize(l)} (${counts[l]||0})`
-  }));
+  return locs.map(l => ({ id: l, count: counts[l] || 0 }));
 }
 
 function capitalize(s) { return s ? s[0].toUpperCase() + s.slice(1) : ''; }
@@ -822,7 +1229,7 @@ function filteredProducts() {
   return ps;
 }
 
-// Products filtered by location only (used to count categories in current location view)
+// Products filtered by location only (for category counts)
 function locationFilteredProducts() {
   return products.filter(p => {
     if (currentTab !== 'all' && (p.location||'pantry').toLowerCase() !== currentTab) return false;
@@ -846,24 +1253,138 @@ function sortProducts(ps) {
   });
 }
 
+function getStats() {
+  let total = products.length, expiring = 0, expired = 0, noDate = 0;
+  products.forEach(p => {
+    if (!p.expiration_date) { noDate++; return; }
+    const info = expiryInfo(p.expiration_date);
+    if (info.cls === 'expired') expired++;
+    else if (info.cls === 'expiring') expiring++;
+  });
+  return { total, expiring, expired, noDate };
+}
+
 function render() {
   renderTabs();
   renderCatBar();
   renderContent();
   renderStats();
+  renderSidebar();
 }
 
+/* ── Sidebar render ── */
+function renderSidebar() {
+  const stats = getStats();
+
+  // Update subtitle
+  const sub = document.getElementById('sidebarSubtitle');
+  if (sub) sub.textContent = `${stats.total} items · ${stats.expiring} expiring`;
+
+  // Update stat values
+  const sv = n => document.getElementById(n);
+  if (sv('sidebarStatTotalVal')) sv('sidebarStatTotalVal').textContent = stats.total;
+  if (sv('sidebarStatExpiringVal')) sv('sidebarStatExpiringVal').textContent = stats.expiring;
+  if (sv('sidebarStatExpiredVal')) sv('sidebarStatExpiredVal').textContent = stats.expired;
+  if (sv('sidebarStatNoDatVal')) sv('sidebarStatNoDatVal').textContent = stats.noDate;
+
+  // Location list
+  const locList = document.getElementById('sidebarLocList');
+  if (locList) {
+    const locs = getLocations();
+    locList.innerHTML = locs.map(loc => {
+      const label = loc.id === 'all' ? 'All Locations' : capitalize(loc.id);
+      const emoji = loc.id === 'all' ? '🏠' : locationEmoji(loc.id);
+      const active = currentTab === loc.id;
+      return `<button class="sidebar-loc-item${active ? ' active' : ''}" onclick="setTabFromSidebar('${loc.id}')">
+        <span class="sidebar-loc-bar"></span>
+        <span class="sidebar-loc-label">${emoji} ${label}</span>
+        <span class="sidebar-loc-count">${loc.count}</span>
+      </button>`;
+    }).join('');
+  }
+
+  // Category list
+  const catList = document.getElementById('sidebarCatList');
+  if (catList) {
+    const locFiltered = locationFilteredProducts();
+    const counts = {};
+    locFiltered.forEach(p => { const c = p.user_category || 'Other'; counts[c] = (counts[c] || 0) + 1; });
+    const total = locFiltered.length;
+
+    let html = `<button class="sidebar-cat-item${currentCategory === 'all' ? ' active' : ''}" onclick="setCategoryFromSidebar('all')">
+      <span class="sidebar-cat-bar" style="background:#5B8C5A"></span>
+      <span class="sidebar-cat-label">All Categories</span>
+      <span class="sidebar-cat-count">${total}</span>
+    </button>`;
+
+    CATEGORIES.forEach(cat => {
+      const count = counts[cat.id] || 0;
+      if (count === 0) return;
+      const active = currentCategory === cat.id;
+      html += `<button class="sidebar-cat-item${active ? ' active' : ''}" onclick="setCategoryFromSidebar('${cat.id.replace(/'/g, "\\'")}')">
+        <span class="sidebar-cat-bar" style="background:${cat.barColor}"></span>
+        <span class="sidebar-cat-label">${cat.emoji} ${cat.id}</span>
+        <span class="sidebar-cat-count">${count}</span>
+      </button>`;
+    });
+    catList.innerHTML = html;
+  }
+
+  // Sync sidebar sort buttons
+  document.querySelectorAll('.sidebar-sort-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.sort === currentSort);
+  });
+}
+
+function setTabFromSidebar(id) {
+  currentTab = id;
+  currentCategory = 'all';
+  closeSidebar();
+  render();
+}
+
+function setCategoryFromSidebar(cat) {
+  if (currentCategory === cat && cat !== 'all') {
+    currentCategory = 'all';
+  } else {
+    currentCategory = cat;
+  }
+  closeSidebar();
+  render();
+}
+
+function setSortSidebar(s, btn) {
+  currentSort = s;
+  // Sync header sort buttons
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  const headerBtn = document.querySelector(`.sort-btn[onclick="setSort('${s}',this)"]`);
+  if (headerBtn) headerBtn.classList.add('active');
+  render();
+}
+
+/* ── Tablet sidebar toggle ── */
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+/* ── Mobile/tablet renders ── */
 function renderCatBar() {
   const bar = document.getElementById('catBar');
   const locFiltered = locationFilteredProducts();
-  // Count categories within current location filter
   const counts = {};
   locFiltered.forEach(p => {
     const c = p.user_category || 'Other';
     counts[c] = (counts[c] || 0) + 1;
   });
 
-  // Build pills: "All" + categories with >0 items
   const total = locFiltered.length;
   let html = `<button class="cat-pill${currentCategory === 'all' ? ' active' : ''}" data-cat="all" onclick="setCategory('all')">All (${total})</button>`;
 
@@ -877,7 +1398,6 @@ function renderCatBar() {
 }
 
 function setCategory(cat) {
-  // Single-select: tap active = back to all
   if (currentCategory === cat && cat !== 'all') {
     currentCategory = 'all';
   } else {
@@ -889,14 +1409,7 @@ function setCategory(cat) {
 function escAttr(s) { return s.replace(/"/g, '&quot;'); }
 
 function renderStats() {
-  const total = products.length;
-  let expiring = 0, expired = 0, noDate = 0;
-  products.forEach(p => {
-    if (!p.expiration_date) { noDate++; return; }
-    const info = expiryInfo(p.expiration_date);
-    if (info.cls === 'expired') expired++;
-    else if (info.cls === 'expiring') expiring++;
-  });
+  const { total, expiring, expired, noDate } = getStats();
   document.getElementById('statTotal').textContent = total;
   document.getElementById('statExpiring').textContent = expiring;
   document.getElementById('statExpired').textContent = expired;
@@ -905,10 +1418,13 @@ function renderStats() {
 
 function renderTabs() {
   const t = document.getElementById('tabs');
-  const tabList = tabs();
-  t.innerHTML = tabList.map(tab =>
-    `<button class="tab${tab.id===currentTab?' active':''}" onclick="setTab('${tab.id}')">${tab.label}</button>`
-  ).join('');
+  const locs = getLocations();
+  t.innerHTML = locs.map(loc => {
+    const label = loc.id === 'all'
+      ? `All (${loc.count})`
+      : `${locationEmoji(loc.id)} ${capitalize(loc.id)} (${loc.count})`;
+    return `<button class="tab${loc.id===currentTab?' active':''}" onclick="setTab('${loc.id}')">${label}</button>`;
+  }).join('');
 }
 
 function renderContent() {
@@ -927,7 +1443,6 @@ function renderContent() {
     return info.cls === 'expiring' || info.cls === 'expired';
   });
 
-  // Group remaining by location
   const nonUrgent = ps.filter(p => {
     if (!p.expiration_date) return true;
     const info = expiryInfo(p.expiration_date);
@@ -949,7 +1464,7 @@ function renderContent() {
       byLoc[l].push(p);
     });
     for (const [loc, items] of Object.entries(byLoc).sort(([a],[b]) => a.localeCompare(b))) {
-      html += `<div class="section-heading">${categoryEmoji(loc.toLowerCase())} ${loc} (${items.length})</div>`;
+      html += `<div class="section-heading">${locationEmoji(loc.toLowerCase())} ${loc} (${items.length})</div>`;
       html += `<div class="products-grid">${items.map(p => cardHTML(p, false)).join('')}</div>`;
     }
   } else {
@@ -969,12 +1484,12 @@ function catBadgeHTML(p) {
 
   const dropdownItems = CATEGORIES.map(c =>
     `<div class="cat-dropdown-item${c.id === cat ? ' selected' : ''}" onclick="selectCategory('${p.barcode}','${c.id}',event)">
-      <span class="cat-dot" style="background:${c.textColor}"></span>
+      <span class="cat-dot" style="background:${c.barColor}"></span>
       ${c.emoji} ${c.id}
     </div>`
   ).join('');
 
-  return `<span class="cat-badge" data-cat="${escAttr(cat)}" onclick="toggleCatDropdown('${p.barcode}',event)" title="Change category" style="position:relative">
+  return `<span class="cat-badge" data-cat="${escAttr(cat)}" onclick="toggleCatDropdown('${p.barcode}',event)" title="Change category">
     ${info.emoji} ${cat}
     <div class="cat-dropdown${isOpen ? ' open' : ''}" id="${dropdownId}">
       ${dropdownItems}
@@ -1053,8 +1568,8 @@ function cardHTML(p, isUrgent) {
       <div class="card-emoji">${productEmoji(p)}</div>
       <div class="card-info">
         <div class="card-name">${p.name || 'Unknown'}</div>
+        ${p.brand ? `<div class="card-brand">${p.brand}</div>` : ''}
         <div class="card-sub">
-          ${p.brand ? `<span>${p.brand}</span>` : ''}
           ${catBadgeHTML(p)}
           ${p.location ? `<span class="loc-badge">${p.location}</span>` : ''}
         </div>
@@ -1174,7 +1689,7 @@ async function patch(barcode, fields) {
 
 function setTab(id) {
   currentTab = id;
-  currentCategory = 'all'; // reset category filter when location changes
+  currentCategory = 'all';
   render();
 }
 
@@ -1182,6 +1697,8 @@ function setSort(s, btn) {
   currentSort = s;
   document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  // Sync sidebar
+  document.querySelectorAll('.sidebar-sort-btn').forEach(b => b.classList.toggle('active', b.dataset.sort === s));
   render();
 }
 

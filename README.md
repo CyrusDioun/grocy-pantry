@@ -1,71 +1,153 @@
-# Grocy Barcode Scanner → Food Inventory
+# grocy-pantry
 
-## How It Works
+Barcode scanner + smart pantry dashboard for home inventory management. Built for Sage (Linux Omen), integrated with Grocy and served via the Sage Mission Control dashboard.
 
-1. **Take a photo** of a barcode on your phone
-2. **Drop it into** `~/Dropbox/Grocy-Scan/` (via Dropbox sync from any device)
-3. **Scanner detects** the new file (inotify — zero CPU when idle)
-4. **Reads barcode** using zbarimg (with enhanced image retry via PIL)
-5. **Looks up product** across 3 databases in order:
-   - [Open Food Facts](https://world.openfoodfacts.org) — best data, includes nutrition
-   - [UPC Item DB](https://www.upcitemdb.com) — good coverage, free trial tier
-   - [Go-UPC](https://go-upc.com) — web scrape fallback
-6. **Saves to inventory** at `~/grocy/inventory.json`
-7. **Moves photo** to `processed/` subfolder
+---
 
-## Commands
+## Features (v2)
 
-```bash
-python3 scan.py watch     # Watch folder for new photos (inotify, runs as service)
-python3 scan.py scan      # Process any photos in folder now
-python3 scan.py list      # Show current inventory
-python3 scan.py resolve   # Re-lookup all unknown barcodes against all databases
+### Inventory Management
+- **Barcode scanning** via USB scanner → auto-lookup via Open Food Facts API
+- **Add / edit / delete** products with quantity, location, expiry, and notes
+- **Out of stock tracking** — zero-quantity items flagged separately
+- **Inventory persisted** in `~/grocy/inventory.json` (Dropbox-synced)
+
+### Smart Categorization
+- **10 product categories**: Produce, Dairy & Eggs, Meat & Seafood, Bakery & Bread, Pantry Staples, Snacks & Sweets, Beverages, Frozen, Household, Other
+- **Auto-categorized** from Open Food Facts taxonomy on scan
+- **User override** — tap category badge on any card to reassign
+- Category source tracked (`api` vs `user`) for override persistence
+
+### Dashboard UI
+- **Triple filtering**: location × category × search text
+- **Location tabs** with counts: All, Pantry, Fridge, Freezer
+- **Category filter pill bar** — horizontal scroll on mobile
+- **Sort**: Name, Quantity, Expiry — with ascending/descending toggle
+- **Stats bar** — Total / Low Stock / Expiring Soon / Out of Stock, each clickable as a filter
+- **Skeleton loading states**, error state with retry, empty state with CTA
+
+### Responsive Layout
+- **Mobile (≤ 1024px)**: card grid, horizontal pill scroll, bottom sheet detail panel
+- **Desktop (≥ 1025px)**: fixed sidebar with filters + stats, constrained content max-width (1920px)
+
+### Location Picker
+- **Dropdown selector** on product cards (replaces blind cycle tap)
+- Inline update via `PATCH /api/pantry/<barcode>`
+
+---
+
+## Architecture
+
+```
+USB Barcode Scanner
+      │
+      ▼
+  scan.py  ──── Open Food Facts API (name, category)
+      │
+      ▼
+inventory.json  (~/grocy/inventory.json, Dropbox-synced)
+      │
+      ▼
+server.py  (Python HTTP server, port 9002)
+      │
+      ├── GET  /api/pantry         → full product list
+      ├── PATCH /api/pantry/<id>   → update fields
+      ├── POST  /api/pantry        → add product
+      └── DELETE /api/pantry/<id> → remove product
+      │
+      ▼
+pantry-dashboard.html  (single-page HTML+JS, no framework)
 ```
 
-## Files
+The dashboard is served as a static page within the Sage Mission Control multi-page dashboard at `http://localhost:9002/pages/pantry-dashboard.html`.
 
-| File | Purpose |
-|---|---|
-| `scan.py` | Main scanner script |
-| `inventory.json` | Product database (JSON) |
-| `scan.log` | Processing log |
-| `docker-compose.yml` | Grocy web UI (Docker) |
-| `~/Dropbox/Grocy-Scan/` | Drop barcode photos here |
-| `~/Dropbox/Grocy-Scan/processed/` | Photos move here after scanning |
+---
 
-## Service
+## Setup
 
+### Prerequisites
+- Python 3.10+
+- USB barcode scanner (HID keyboard mode)
+- Dropbox (optional, for cross-device sync)
+
+### 1. Clone
 ```bash
-# Systemd user service (auto-starts on boot)
-systemctl --user status grocy-scanner
-systemctl --user restart grocy-scanner
+git clone git@github.com:CyrusDioun/grocy-pantry.git ~/projects/grocy-pantry
 ```
 
-## Features
-
-- **Dropbox dedup** — automatically skips `(1)` conflict copies
-- **Multi-source lookup** — 3 databases for maximum product coverage
-- **IPv4 forced** — avoids IPv6 connectivity issues
-- **Image enhancement** — auto-enhances blurry/dark photos for better barcode reads
-- **Source tracking** — each product records which database it came from
-- **Quantity tracking** — scanning same barcode increments quantity
-- **Zero CPU idle** — uses inotify, only wakes when files arrive
-
-## Dependencies
-
+### 2. Inventory file
 ```bash
-# System
-apt install zbar-tools
-
-# Python
-pip install requests inotify_simple Pillow
+mkdir -p ~/grocy
+echo '{"products":[]}' > ~/grocy/inventory.json
+# Or restore from Dropbox backup
 ```
 
-## Expanding to Other Inventory
+### 3. Dashboard server (sage-tools)
+The server lives in `~/projects/sage-tools/dashboard/`. It's managed by a systemd user service:
+```bash
+systemctl --user status dashboard
+systemctl --user start dashboard
+```
 
-This same pattern (photo → barcode → lookup → JSON) can be adapted for:
-- **Tools** — scan UPC codes on power tools, hand tools
-- **Clothes** — scan tags (though many clothes lack UPC)
-- **HomeBox** — planned self-hosted general inventory system (Docker)
+The dashboard page is served from:
+```
+~/projects/sage-tools/dashboard/pages/pantry-dashboard.html
+```
+This file is kept in sync with `dashboard.html` in this repo.
 
-For non-barcoded items, consider HomeBox for manual cataloging with photos.
+### 4. Scanner service
+```bash
+# Run scan.py directly (reads from /dev/input or stdin)
+python3 ~/projects/grocy-pantry/scan.py
+# Or enable as systemd service (grocy-scanner)
+systemctl --user start grocy-scanner
+```
+
+### 5. Dropbox sync (optional)
+Point Dropbox to sync `~/grocy/` for cross-device inventory access. The Mac and Omen both read/write the same `inventory.json`.
+
+---
+
+## Changelog
+
+### v1 — 2026-03-05 · `b8fa590`
+Initial release.
+- USB barcode scanner (`scan.py`) with Open Food Facts lookup
+- Basic pantry dashboard (`dashboard.html`) — list view, add/edit/delete
+- Inventory stored in `~/grocy/inventory.json`
+
+### v2 — 2026-03-06
+
+#### Phase 1: Category Backend · `a090a08` · fix `41a301b`
+- Added `categorize.py` — maps Open Food Facts taxonomy to 10 product groups
+- Backfilled all 58 existing products with auto-categories
+- Updated `scan.py` to auto-categorize on every scan
+- Updated `server.py` PATCH to handle `user_category` + `category_source` fields
+- Fixed timestamp format and removed dead code in scanner
+
+#### Phase 2: Category Filter UI · `1d07d24`
+- Category filter pill bar below location tabs (horizontal scroll on mobile)
+- Triple filtering: location × category × search
+- Category badge on product cards with dropdown picker on tap
+- Category field added to Add Item modal
+
+#### Phase 3: Desktop Sidebar Layout · `40748b1` · fix `bbeff4f`
+- Responsive sidebar at ≥ 1025px with filters + stats
+- Card grid adjusts for sidebar offset
+- Content max-width constrained to 1920px
+- All breakpoints tested 320px → 1920px
+
+#### Phase 4: Polish · `e72eadb`
+- Skeleton loading cards, centered error state with retry button, empty state with CTA
+- Location dropdown replaces blind cycle-tap
+- Sort direction toggle with ▲/▼ indicator
+- Stats bar items clickable as filters (active state highlighted)
+- "Out of stock" label for qty=0 products
+- Null field handling in detail panel (no broken `undefined` display)
+
+#### Phase 5: Deploy · 2026-03-06
+- Verified `dashboard.html` ↔ `pantry-dashboard.html` in sync (identical)
+- Confirmed live dashboard loads at `http://localhost:9002/pages/pantry-dashboard.html`
+- Screenshots taken at 420px and 1200px
+- README written with full changelog
+- Pushed to `origin main`

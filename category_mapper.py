@@ -16,14 +16,6 @@ SKIP_SEGMENTS = {
     "plant-based",
 }
 
-# Segments that start with "en:" are taxonomy codes, skip them
-def _is_skip_segment(seg: str) -> bool:
-    s = seg.strip().lower()
-    if s.startswith("en:"):
-        return False  # We'll handle en: codes separately below
-    return s in SKIP_SEGMENTS
-
-
 # Category taxonomy: ordered by priority (most specific first).
 # For each category: (name, keywords_list)
 # Each keyword is checked as a substring in a normalized segment.
